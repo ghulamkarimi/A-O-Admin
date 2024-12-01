@@ -57,6 +57,22 @@ const CustomSidebar = () => {
                         >
                             auto verkaufen
                         </Link>
+                    </li><li>
+                        <Link
+                            to="/register"
+                            className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/cars" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            Register
+                        </Link>
+                    </li><li>
+                        <Link
+                            to="/login"
+                            className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/cars" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            Login
+                        </Link>
                     </li>
                 </ul>
             </nav>

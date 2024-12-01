@@ -1,7 +1,7 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
 import { IOffer } from "../../interface";
 import { RootState, AppDispatch } from "../store/index"; // AppDispatch importieren
-import { getOffers, createOffer as createOfferService } from "../../service";
+import { getOffers, createOffer as createOfferService, deleteOffer, editOffer } from "../../service";
 import { socket } from "../../service"; // Verwende die korrekte Instanz von socket
 
 interface OfferState {
@@ -39,6 +39,28 @@ export const createOffer = createAsyncThunk(
     }
   );
 
+  export const deleteOfferApi = createAsyncThunk(
+    "/offer/deleteOffer", 
+    async (offer: IOffer, { rejectWithValue }) => {
+      try {
+        // Aufruf der API-Funktion
+        const response = await deleteOffer(offer); 
+        return response.data; // Rückgabe der Antwort-Daten bei Erfolg
+      } catch (error: any) {
+        // Fehlerbehandlung
+        return rejectWithValue(error?.response?.data?.message || "Error deleting offer");
+      }
+    }
+  );
+
+export const editOfferApi = createAsyncThunk("/offer/editOffer", async (offer: IOffer, { rejectWithValue }) => {
+    try {
+        const response = await editOffer(offer);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error?.response?.data?.message || "Error editing offer");
+    }
+})
 
 const offerSlice = createSlice({
     name: "offer",

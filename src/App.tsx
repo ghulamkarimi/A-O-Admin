@@ -11,6 +11,8 @@ import { AppDispatch } from "./feuture/store";
 import { useEffect } from "react";
 import { subscribeToSocketEvents } from "./feuture/reducers/offerSlice";
 import { socket } from "./service";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>()
@@ -47,6 +49,8 @@ const App = () => {
             <Route path="/users" element={<UserList />} />
             <Route path="/carBuy" element={<CarBuy />} />
             <Route path="/carRent" element={<CarRent />} />
+            <Route path="/register" element={<Register />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </div>
       </div>

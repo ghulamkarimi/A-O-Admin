@@ -10,3 +10,33 @@ export interface IOffer {
     
 }
 export type TOffer = Partial<IOffer>;
+
+
+export interface IUser {
+    _id: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+    isAdmin: boolean;
+    phone: string;
+    profile_photo: string;
+    token: string | null;
+    accessToken: string | null;
+    refreshToken: string | null;
+    verificationCode: string;
+    isAccountVerified: boolean;
+}
+export interface IUserInfo {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    profile_photo: string;
+    email: string;
+    isAdmin: boolean;
+    isAccountVerified?: boolean;
+    exp: number;
+    iat: number;
+}
+export type TUser = Partial<IUser>;

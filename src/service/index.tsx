@@ -1,12 +1,32 @@
 import axios from 'axios';
-import { TOffer } from '../interface/index';
+import { TOffer, TUser } from '../interface/index';
 import { Socket, io } from 'socket.io-client';
+import axiosJWT from './axiosJwt';
 
 const API_URL = "http://localhost:7001";
 
 export const socket: Socket = io(API_URL, {
     autoConnect: false, // Automatisches Verbinden vermeiden, bis es explizit verlangt wird
 });
+
+export const userRegister = (user: TUser) => {
+    const url = `${API_URL}/user/register`;
+    return axios.post(url, user);
+}
+
+export const getAllUsers = () => {
+    const url = `${API_URL}/user/allUsers`;
+    return axios.get(url);
+}
+
+export const userLogin = (user: TUser) => {
+    const url = `${API_URL}/user/login`;
+    return axiosJWT.post(url, user);
+}
+export const refreshToken = () => {
+    const url = `${API_URL}/user/refreshToken`;
+    return axios.get(url, { withCredentials: true }); // Mit Credentials senden
+};
 
 export const getOffers = async () => {
     const url = `${API_URL}/offer/getOffers`;
@@ -24,6 +44,7 @@ export const deleteOffer = async (offer: TOffer) => {
 }
 
 export const editOffer = async (offer: TOffer) => {
-    const url = `${API_URL}/offer/editOffer/`;
-    return axios.put(url, offer);
-}
+    const url = `${API_URL}/offer/editOffer/${offer.offerId}`; // Verwende die URL für das Bearbeiten
+    const formData = new FormData();
+    return axios.put(url, formData, { withCredentials: true });
+};

@@ -44,6 +44,14 @@ const ResponsiveNavbar = () => {
                             <Link to="/carBuy" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
                                 Fahrzeuge verkaufen
                             </Link>
+                        </li><li>
+                            <Link to="/register" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
+                             Register
+                            </Link>
+                        </li><li>
+                            <Link to="/login" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
+                                Login
+                            </Link>
                         </li>
                     </ul>
                 </nav>
