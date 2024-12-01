@@ -37,14 +37,25 @@ export const createOffer = async (formData: FormData) => {
     const url = `${API_URL}/offer/createOffer`;
     return axios.post(url, formData, { withCredentials: true });
   }
-
-export const deleteOffer = async (offer: TOffer) => {
+// serviceAPI.ts
+export const deleteOffer = async (userId: string, offerId: string) => {
     const url = `${API_URL}/offer/deleteOffer/`;
-    return axios.delete(url, { data: offer });
-}
+    return axios.delete(url, {
+        data: { userId, offerId },  // userId und offerId im Request-Body
+    });
+};
 
-export const editOffer = async (offer: TOffer) => {
-    const url = `${API_URL}/offer/editOffer/${offer.offerId}`; // Verwende die URL für das Bearbeiten
-    const formData = new FormData();
-    return axios.put(url, formData, { withCredentials: true });
+
+export const editOffer = async (formData: FormData) => {
+    const url = `${API_URL}/offer/editOffer`;
+    try {
+        const response = await axios.put(url, formData, { withCredentials: true });
+        return response.data; // Rückgabe des aktualisierten Angebots
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            throw new Error(error.response?.data?.message || 'Fehler beim Bearbeiten des Angebots');
+        } else {
+            throw new Error('Fehler beim Bearbeiten des Angebots');
+        }
+    }
 };

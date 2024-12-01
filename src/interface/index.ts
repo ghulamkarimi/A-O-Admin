@@ -5,6 +5,7 @@ export interface IOffer {
     oldPrice: number;
     newPrice: number;
     userId:string;
+    discountPercentage?: number; 
     imageUrl: string; 
     offerId: string;
     

@@ -10,13 +10,14 @@ import {
     offerDeleted,
     offerUpdated,
     createOffer,
+    deleteOfferApi,
 } from "../feuture/reducers/offerSlice";
 import { NotificationService } from "../service/NotificationService";
 
 const OfferList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const offers = useSelector(displayOffers);
-    const userId = localStorage.getItem("userId");
+    const userId = localStorage.getItem("userId") || "";
 
     useEffect(() => {
         socket.connect();
@@ -72,6 +73,15 @@ const OfferList = () => {
         oldPrice: Yup.number().required("Alter Preis ist erforderlich"),
         newPrice: Yup.number().required("Neuer Preis ist erforderlich"),
     });
+
+    const handleDeleteOffer = async (offerId: string) => {
+        try {
+            const response = await dispatch(deleteOfferApi({ userId, offerId })).unwrap();
+            NotificationService.success(response.message || "Angebot gelöscht!");
+        } catch (error: any) {
+            NotificationService.error(error.message || "Fehler beim Löschen des Angebots.");
+        }
+    };
 
     return (
         <div className="p-6 bg-gray-100 min-h-screen flex flex-col">
@@ -236,14 +246,18 @@ const OfferList = () => {
                                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm transition-all mr-2">
                                     Bearbeiten
                                 </button>
-                                <button className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm transition-all">
+                                <button 
+                                onClick={() => handleDeleteOffer(offer._id)}
+                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm transition-all">
                                     Löschen
                                 </button>
                             </div>
                         </div>
                     ))
                 ) : (
-                    <p className="text-gray-600 col-span-3 text-center">Keine Angebote verfügbar.</p>
+                    <div className="col-span-3 text-center text-gray-500">
+                        Keine Angebote verfügbar.
+                    </div>
                 )}
             </div>
         </div>
