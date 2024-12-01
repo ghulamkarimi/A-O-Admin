@@ -1,7 +1,7 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
 import { IOffer } from "../../interface";
 import { RootState, AppDispatch } from "../store/index"; // AppDispatch importieren
-import { getOffers } from "../../service";
+import { getOffers, createOffer as createOfferService } from "../../service";
 import { socket } from "../../service"; // Verwende die korrekte Instanz von socket
 
 interface OfferState {
@@ -27,6 +27,19 @@ export const fetchOffers = createAsyncThunk("/offer/fetchOffers", async () => {
     }
 });
 
+export const createOffer = createAsyncThunk(
+    "/offer/createOffer",
+    async (formData: FormData, { rejectWithValue }) => {
+      try {
+        const response = await createOfferService(formData);
+        return response.data;
+      } catch (error: any) {
+        return rejectWithValue(error?.response?.data?.message || "Error creating offer");
+      }
+    }
+  );
+
+
 const offerSlice = createSlice({
     name: "offer",
     initialState,
@@ -47,6 +60,9 @@ const offerSlice = createSlice({
             .addCase(fetchOffers.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message as string || "Error fetching offers";
+            })
+            .addCase(createOffer.fulfilled, (state, action) => {
+                offerAdapter.addOne(state, action.payload);
             });
     }
 });

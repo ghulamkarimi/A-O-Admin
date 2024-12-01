@@ -1,30 +1,29 @@
 import axios from 'axios';
-import { IOffer } from '../interface';
 import { TOffer } from '../interface/index';
-import { Socket,io } from 'socket.io-client';
+import { Socket, io } from 'socket.io-client';
 
 const API_URL = "http://localhost:7001";
 
 export const socket: Socket = io(API_URL, {
     autoConnect: false, // Automatisches Verbinden vermeiden, bis es explizit verlangt wird
-  });
+});
 
 export const getOffers = async () => {
     const url = `${API_URL}/offer/getOffers`;
-    return axios.get(url, { withCredentials: true }); 
+    return axios.get(url, { withCredentials: true });
 }
 
-export const createOffer = async (offer:IOffer) => {
+export const createOffer = async (formData: FormData) => {
     const url = `${API_URL}/offer/createOffer`;
-    return axios.post(url, offer);
-}
+    return axios.post(url, formData, { withCredentials: true });
+  }
 
-export const deleteOffer = async (offer:TOffer) => {
+export const deleteOffer = async (offer: TOffer) => {
     const url = `${API_URL}/offer/deleteOffer/`;
     return axios.delete(url, { data: offer });
 }
 
-export const editOffer = async (offer:TOffer) => {
-     const url = `${API_URL}/offer/editOffer/`;
+export const editOffer = async (offer: TOffer) => {
+    const url = `${API_URL}/offer/editOffer/`;
     return axios.put(url, offer);
 }
