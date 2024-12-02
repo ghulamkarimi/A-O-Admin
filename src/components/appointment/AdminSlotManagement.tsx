@@ -1,16 +1,15 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
 import {
     fetchAllSlots,
     blockSlotById,
     unblockSlotById,
     confirmSlotById,
 } from "../../feuture/reducers/slotSlice";
+import { subscribeToSlotSocketEvents } from "../../feuture/reducers/slotSlice";
 import { NotificationService } from "../../service/NotificationService";
-import { socket } from "../../service";
 import { AppDispatch, RootState } from "../../feuture/store";
-
+import { socket } from "../../service";
 
 const AdminSlotManagement = () => {
     const dispatch = useDispatch<AppDispatch>();
@@ -23,15 +22,11 @@ const AdminSlotManagement = () => {
         // WebSocket verbinden
         socket.connect();
 
-        // Event-Listener für Echtzeit-Updates
-        socket.on("slotUpdated", (updatedSlot) => {
-            dispatch(fetchAllSlots()); // Alternativ: State direkt aktualisieren, um Ressourcen zu sparen
-            NotificationService.success(`Slot-Update: Status wurde auf ${updatedSlot.status} geändert.`);
-        });
+        // Socket-Events abonnieren
+        subscribeToSlotSocketEvents(dispatch);
 
         // Aufräumen
         return () => {
-            socket.off("slotUpdated");
             socket.disconnect();
         };
     }, [dispatch]);

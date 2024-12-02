@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { fetchSlots, blockSlot, unblockSlot, confirmSlot } from "../../service/index";
+import { fetchSlots, blockSlot, unblockSlot, confirmSlot, socket } from "../../service/index";
+import { AppDispatch } from "../store";
 
 // Initialer Zustand
 interface SlotState {
@@ -51,11 +52,19 @@ export const confirmSlotById = createAsyncThunk("slots/confirm", async (slotId: 
     }
 });
 
+
+export const subscribeToSlotSocketEvents = (dispatch: AppDispatch) => {
+    socket.on("slotUpdated", (updatedSlot: any) => {
+        dispatch(updateSlot(updatedSlot));
+    });
+};
+
 // Slice
 const slotSlice = createSlice({
     name: "slots",
     initialState,
     reducers: {
+        // WebSocket-Updates
         updateSlot(state, action) {
             const updatedSlot = action.payload;
             state.slots = state.slots.map((slot) =>

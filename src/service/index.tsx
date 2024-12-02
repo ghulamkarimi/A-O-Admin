@@ -9,18 +9,7 @@ export const socket: Socket = io(API_URL, {
     autoConnect: false, // Automatisches Verbinden vermeiden, bis es explizit verlangt wird
 });
 
-export const connectSocket = () => {
-    if (!socket.connected) {
-        socket.connect();
-    }
-};
-
-// Verbindung trennen
-export const disconnectSocket = () => {
-    if (socket.connected) {
-        socket.disconnect();
-    }
-};
+ 
 
 export const userRegister = (user: TUser) => {
     const url = `${API_URL}/user/register`;
