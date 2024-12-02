@@ -15,6 +15,7 @@ import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRouteProps "; 
 import PasswordResetPage from "./pages/PasswordResetPage";
 import LogoutComponent from "./components/LogoutComponent";
+import Appointment from "./pages/Appointment";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -47,6 +48,7 @@ const App = () => {
 <Routes>
   <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
   <Route path="/offers" element={<ProtectedRoute><OfferList /></ProtectedRoute>} />
+  <Route path="/appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
   <Route path="/users" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
   <Route path="/carBuy" element={<ProtectedRoute><CarBuy /></ProtectedRoute>} />
   <Route path="/carRent" element={<ProtectedRoute><CarRent /></ProtectedRoute>} />

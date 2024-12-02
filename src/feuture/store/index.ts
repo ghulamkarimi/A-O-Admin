@@ -1,8 +1,9 @@
 import { configureStore } from "@reduxjs/toolkit";
 import offerReducer, { fetchOffers } from "../reducers/offerSlice";
 import userReducer, { fetchUsers } from "../reducers/userSlice";
+import slotReducer , {fetchAllSlots} from "../reducers/slotSlice";
 import axiosJWT from "../../service/axiosJwt";
-import { refreshToken } from "../../service";
+import {  refreshToken } from "../../service";
 import { jwtDecode } from "jwt-decode";
 
 
@@ -15,6 +16,7 @@ export const store = configureStore({
     reducer: {
         offer: offerReducer,
         users: userReducer,
+        slots: slotReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
@@ -44,6 +46,7 @@ axiosJWT.interceptors.request.use(
 
 store.dispatch(fetchOffers());
 store.dispatch(fetchUsers());
+store.dispatch(fetchAllSlots())
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

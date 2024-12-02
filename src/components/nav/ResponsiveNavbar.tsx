@@ -31,6 +31,11 @@ const ResponsiveNavbar = () => {
                             </Link>
                         </li>
                         <li>
+                            <Link to="/appointment" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
+                                Termine
+                            </Link>
+                        </li>
+                        <li>
                             <Link to="/users" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
                                 Benutzer
                             </Link>

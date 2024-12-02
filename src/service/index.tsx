@@ -9,6 +9,19 @@ export const socket: Socket = io(API_URL, {
     autoConnect: false, // Automatisches Verbinden vermeiden, bis es explizit verlangt wird
 });
 
+export const connectSocket = () => {
+    if (!socket.connected) {
+        socket.connect();
+    }
+};
+
+// Verbindung trennen
+export const disconnectSocket = () => {
+    if (socket.connected) {
+        socket.disconnect();
+    }
+};
+
 export const userRegister = (user: TUser) => {
     const url = `${API_URL}/user/register`;
     return axios.post(url, user);
@@ -23,22 +36,27 @@ export const userLogin = (user: TUser) => {
     const url = `${API_URL}/user/login`;
     return axiosJWT.post(url, user);
 }
+
 export const refreshToken = () => {
     const url = `${API_URL}/user/refreshToken`;
     return axios.get(url, { withCredentials: true }); // Mit Credentials senden
 };
+
 export const requestPasswordReset =(email: string) => {
     const url = `${API_URL}/user/requestPasswordReset`;
     return axios.post(url, { email });
 }
+
 export const confirmEmailVerificationCode = (email: string, verificationCode: string) => {
     const url = `${API_URL}/user/confirmVerificationCode`;
     return axios.post(url, { email, verificationCode });
   };
+
   export const changePasswordWithEmail = (passwordData: IChangePassword) => {
     const url = `${API_URL}/user/changePasswordWithEmail`;
     return axios.put(url, passwordData);
 };
+
 export const userLogout = () => {
     const url = `${API_URL}/user/logout`;
     return axiosJWT.delete(url);
@@ -74,4 +92,25 @@ export const editOffer = async (formData: FormData) => {
             throw new Error('Fehler beim Bearbeiten des Angebots');
         }
     }
+};
+
+export const fetchSlots = async () => {
+    const url = `${API_URL}/appointment`; // Richtig: Passend zu router.get("/")
+    return axios.get(url);
+};
+
+export const blockSlot = async (slotId: string) => {
+    const url = `${API_URL}/appointment/${slotId}`; // Korrigierte URL
+    return axios.patch(url, { status: "blocked" });
+};
+
+
+export const unblockSlot = async (slotId: string) => {
+    const url = `${API_URL}/appointment/${slotId}`; // Richtig: Passend zu router.patch("/:slotId")
+    return axios.patch(url, { status: "available" });
+};
+
+export const confirmSlot = async (slotId: string) => {
+    const url = `${API_URL}/appointment/${slotId}/confirm`; // Richtig: Passend zu router.patch("/:slotId/confirm")
+    return axios.patch(url);
 };

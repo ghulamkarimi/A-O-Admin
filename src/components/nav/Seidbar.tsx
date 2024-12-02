@@ -33,6 +33,17 @@ const CustomSidebar = () => {
                             Angebote
                         </Link>
                     </li>
+
+
+                    <li>
+                        <Link
+                            to="/appointment"
+                            className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/appointment" ? "bg-gray-700" : ""
+                                }`}
+                        >
+                            Termine
+                        </Link>
+                    </li>
                     <li>
                         <Link
                             to="/users"
