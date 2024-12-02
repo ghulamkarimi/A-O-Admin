@@ -1,6 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import offerReducer, { fetchOffers } from "../reducers/offerSlice";
-import userReducer from "../reducers/userSlice";
+import userReducer, { fetchUsers } from "../reducers/userSlice";
 import axiosJWT from "../../service/axiosJwt";
 import { refreshToken } from "../../service";
 import { jwtDecode } from "jwt-decode";
@@ -43,6 +43,7 @@ axiosJWT.interceptors.request.use(
   
 
 store.dispatch(fetchOffers());
+store.dispatch(fetchUsers());
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;

@@ -11,26 +11,27 @@ import { AppDispatch } from "./feuture/store";
 import { useEffect } from "react";
 import { subscribeToSocketEvents } from "./feuture/reducers/offerSlice";
 import { socket } from "./service";
-import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRouteProps "; 
+import PasswordResetPage from "./pages/PasswordResetPage";
+import LogoutComponent from "./components/LogoutComponent";
 
 const App = () => {
-  const dispatch = useDispatch<AppDispatch>()
+  const dispatch = useDispatch<AppDispatch>();
 
   useEffect(() => {
     if (!socket.connected) {
-        socket.connect();  // Sichere Verbindung
+      socket.connect(); // Sichere Verbindung
     }
 
     subscribeToSocketEvents(dispatch);
 
     return () => {
-        socket.off("offerCreated");
-        socket.off("offerUpdated");
-        socket.off("offerDeleted");
+      socket.off("offerCreated");
+      socket.off("offerUpdated");
+      socket.off("offerDeleted");
     };
-}, [dispatch]);
-
+  }, [dispatch]);
 
   return (
     <Router>
@@ -43,15 +44,16 @@ const App = () => {
 
         {/* Main Content */}
         <div className="flex-1 md:ml-52 p-8 mt-16 md:mt-0">
-          <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/offers" element={<OfferList />} />
-            <Route path="/users" element={<UserList />} />
-            <Route path="/carBuy" element={<CarBuy />} />
-            <Route path="/carRent" element={<CarRent />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-          </Routes>
+<Routes>
+  <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+  <Route path="/offers" element={<ProtectedRoute><OfferList /></ProtectedRoute>} />
+  <Route path="/users" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
+  <Route path="/carBuy" element={<ProtectedRoute><CarBuy /></ProtectedRoute>} />
+  <Route path="/carRent" element={<ProtectedRoute><CarRent /></ProtectedRoute>} />
+   <Route path="/forgetPassword" element={<PasswordResetPage />} />
+   <Route path="/logout" element={<LogoutComponent />} />
+  <Route path="/login" element={<Login />} />
+</Routes>
         </div>
       </div>
     </Router>

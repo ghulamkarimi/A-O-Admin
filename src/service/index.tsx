@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { TOffer, TUser } from '../interface/index';
+import { IChangePassword, TOffer, TUser } from '../interface/index';
 import { Socket, io } from 'socket.io-client';
 import axiosJWT from './axiosJwt';
 
@@ -27,6 +27,22 @@ export const refreshToken = () => {
     const url = `${API_URL}/user/refreshToken`;
     return axios.get(url, { withCredentials: true }); // Mit Credentials senden
 };
+export const requestPasswordReset =(email: string) => {
+    const url = `${API_URL}/user/requestPasswordReset`;
+    return axios.post(url, { email });
+}
+export const confirmEmailVerificationCode = (email: string, verificationCode: string) => {
+    const url = `${API_URL}/user/confirmVerificationCode`;
+    return axios.post(url, { email, verificationCode });
+  };
+  export const changePasswordWithEmail = (passwordData: IChangePassword) => {
+    const url = `${API_URL}/user/changePasswordWithEmail`;
+    return axios.put(url, passwordData);
+};
+export const userLogout = () => {
+    const url = `${API_URL}/user/logout`;
+    return axiosJWT.delete(url);
+}
 
 export const getOffers = async () => {
     const url = `${API_URL}/offer/getOffers`;

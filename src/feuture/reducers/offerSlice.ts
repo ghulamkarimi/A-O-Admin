@@ -30,20 +30,20 @@ export const fetchOffers = createAsyncThunk("/offer/fetchOffers", async () => {
 export const createOffer = createAsyncThunk(
     "/offer/createOffer",
     async (formData: FormData, { rejectWithValue }) => {
-        try {
-            const response = await createOfferService(formData);
-            return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error?.response?.data?.message || "Error creating offer");
-        }
+      try {
+        const response = await createOfferService(formData);
+        return response.data;
+      } catch (error: any) {
+        return rejectWithValue(error?.response?.data?.message || "Error creating offer");
+      }
     }
-);
-export const deleteOfferApi = createAsyncThunk(
-    "/offer/deleteOffer",
+  );
+  export const deleteOfferApi = createAsyncThunk(
+    "/offer/deleteOffer", 
     async ({ userId, offerId }: { userId: string, offerId: string }, { rejectWithValue }) => {
         try {
             const response = await deleteOffer(userId, offerId);
-            return response.data;
+            return response.data; 
         } catch (error: any) {
             return rejectWithValue(error?.response?.data?.message || "Fehler beim Löschen des Angebots");
         }
@@ -51,7 +51,7 @@ export const deleteOfferApi = createAsyncThunk(
 );
 
 export const editOfferApi = createAsyncThunk(
-    'offers/editOfferApi',
+    'offers/editOfferApi', 
     async ({ offer, imageFile }: { offer: TOffer, imageFile?: File }, { rejectWithValue }) => {
         try {
             const formData = new FormData();

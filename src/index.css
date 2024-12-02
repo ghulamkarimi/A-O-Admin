@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.background {
+    @apply bg-cover bg-center bg-no-repeat min-h-screen rounded-lg; 
+}
+
+

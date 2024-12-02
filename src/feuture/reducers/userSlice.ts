@@ -4,9 +4,9 @@ import {
     createSlice,
     EntityState,
 } from "@reduxjs/toolkit";
-import { userLogin, userRegister, getAllUsers} from '../../service/index';
+import { userLogin, userRegister, getAllUsers, confirmEmailVerificationCode, requestPasswordReset, changePasswordWithEmail, userLogout} from '../../service/index';
 import { RootState } from "../store/index";
-import { IUser, IUserInfo, TUser } from "../../interface";
+import { IChangePassword, IUser, IUserInfo, TUser } from "../../interface";
 
 
 
@@ -58,8 +58,64 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async (_, { rejec
         return response.data;
     } catch (error: any) {
         return rejectWithValue(error?.response?.data?.message || "Error fetching users");
+
     }
 });
+
+export const userLogoutApi = createAsyncThunk("users/userLogoutApi", async (_, { rejectWithValue }) => {
+    try {
+        const response = await userLogout();
+        localStorage.removeItem("exp");
+        localStorage.removeItem("userId");
+        return response.data;
+    } catch (error) {
+
+        const errorMessage = (error as any)?.response?.data?.message || "Logout failed";
+        return rejectWithValue(errorMessage);
+    }
+});
+
+export const requestPasswordResetApi = createAsyncThunk(
+    "user/requestPasswordResetApi",
+    async (email: string, { rejectWithValue }) => {
+
+        try {
+            const response = await requestPasswordReset(email);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data.message || "Fehler beim Zurücksetzen des Passworts");
+        }
+    }
+)
+
+export const changePasswordApi = createAsyncThunk(
+    "user/changePassword",
+    async (passwordData: IChangePassword, { rejectWithValue }) => {
+        try {
+            const response = await changePasswordWithEmail(passwordData);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data.message || "Fehler beim Ändern des Passworts");
+        }
+    }
+);
+
+export const confirmEmailVerificationCodeApi = createAsyncThunk(
+    "user/confirmEmailVerificationCode",
+    async (
+      { email, verificationCode }: { email: string; verificationCode: string },
+      { rejectWithValue }
+    ) => {
+      try {
+        const response = await confirmEmailVerificationCode(email, verificationCode);
+        return response.data;
+      } catch (error: any) {
+        return rejectWithValue(
+          error.response?.data?.message || "Fehler beim Bestätigen des Verifizierungscodes."
+        );
+      }
+    }
+  );
 
  
 

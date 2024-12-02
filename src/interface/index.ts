@@ -8,6 +8,7 @@ export interface IOffer {
     discountPercentage?: number; 
     imageUrl: string; 
     offerId: string;
+    createdAt: string;
     
 }
 export type TOffer = Partial<IOffer>;
@@ -28,6 +29,7 @@ export interface IUser {
     refreshToken: string | null;
     verificationCode: string;
     isAccountVerified: boolean;
+    createdAt: string; 
 }
 export interface IUserInfo {
     userId: string;
@@ -41,3 +43,10 @@ export interface IUserInfo {
     iat: number;
 }
 export type TUser = Partial<IUser>;
+
+export interface IChangePassword {
+    email: string;
+    password: string;
+    newPassword: string;
+    confirmPassword: string;
+}

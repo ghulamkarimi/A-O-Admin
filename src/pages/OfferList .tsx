@@ -231,7 +231,12 @@ const OfferList = () => {
                             key={offer._id}
                             className="bg-white shadow-md rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-shadow"
                         >
-                            <h2 className="text-xl font-bold text-gray-800 mb-2">{offer.title}</h2>
+                   <div className="flex justify-between items-center">
+                   <h2 className="text-xl font-bold text-gray-800 mb-2">{offer.title}</h2>
+                   <span className="text-red-500 font-bold">ab{' '}
+                     {new Date(offer.createdAt).toLocaleDateString()}
+                   </span>
+                   </div>
                             <img
                                 className="w-full h-40 object-cover rounded-md mb-4"
                                 src={offer.imageUrl}
