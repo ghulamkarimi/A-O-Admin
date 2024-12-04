@@ -1,5 +1,5 @@
 import { useSelector, useDispatch } from "react-redux";
-import { displayAppointments, blockAppointments, unblockAppointments } from "../../feuture/reducers/appointmentSlice";
+import { displayAppointments, blockAppointments, unblockAppointments, fetchAppointments } from "../../feuture/reducers/appointmentSlice";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { useState } from "react";
@@ -39,8 +39,10 @@ const AdminCalendar = () => {
             const appointmentToUnblock = appointmentsForSelectedDate.find(appt => appt.time === time);
             if (appointmentToUnblock && appointmentToUnblock._id) {
                 try {
-                    const result = await dispatch(unblockAppointments(appointmentToUnblock._id)).unwrap();
+                    await dispatch(unblockAppointments(appointmentToUnblock._id)).unwrap();
                     NotificationService.success(`Der Termin um ${time} wurde erfolgreich freigegeben.`);
+                    // Aktualisiere die Termine nach erfolgreicher Freigabe
+                    dispatch(fetchAppointments());
                 } catch (error) {
                     NotificationService.error(`Fehler beim Freigeben des Termins um ${time}.`);
                 }
@@ -50,8 +52,10 @@ const AdminCalendar = () => {
         } else {
             // Falls der Termin verfügbar ist, blockieren
             try {
-                const result = await dispatch(blockAppointments(appointment)).unwrap();
+                await dispatch(blockAppointments(appointment)).unwrap();
                 NotificationService.success(`Der Termin um ${time} wurde erfolgreich blockiert.`);
+                // Aktualisiere die Termine nach erfolgreicher Blockierung
+                dispatch(fetchAppointments());
             } catch (error) {
                 NotificationService.error(`Fehler beim Blockieren des Termins um ${time}.`);
             }
