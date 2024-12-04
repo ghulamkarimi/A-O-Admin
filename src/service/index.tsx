@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { IChangePassword, TOffer, TUser } from '../interface/index';
+import { IChangePassword, TAppointment, TOffer, TUser } from '../interface/index';
 import { Socket, io } from 'socket.io-client';
 import axiosJWT from './axiosJwt';
+import Appointment from '../pages/Appointment';
 
 const API_URL = "http://localhost:7001";
 
@@ -9,7 +10,7 @@ export const socket: Socket = io(API_URL, {
     autoConnect: false, // Automatisches Verbinden vermeiden, bis es explizit verlangt wird
 });
 
- 
+
 
 export const userRegister = (user: TUser) => {
     const url = `${API_URL}/user/register`;
@@ -31,7 +32,7 @@ export const refreshToken = () => {
     return axios.get(url, { withCredentials: true }); // Mit Credentials senden
 };
 
-export const requestPasswordReset =(email: string) => {
+export const requestPasswordReset = (email: string) => {
     const url = `${API_URL}/user/requestPasswordReset`;
     return axios.post(url, { email });
 }
@@ -39,9 +40,9 @@ export const requestPasswordReset =(email: string) => {
 export const confirmEmailVerificationCode = (email: string, verificationCode: string) => {
     const url = `${API_URL}/user/confirmVerificationCode`;
     return axios.post(url, { email, verificationCode });
-  };
+};
 
-  export const changePasswordWithEmail = (passwordData: IChangePassword) => {
+export const changePasswordWithEmail = (passwordData: IChangePassword) => {
     const url = `${API_URL}/user/changePasswordWithEmail`;
     return axios.put(url, passwordData);
 };
@@ -59,7 +60,7 @@ export const getOffers = async () => {
 export const createOffer = async (formData: FormData) => {
     const url = `${API_URL}/offer/createOffer`;
     return axios.post(url, formData, { withCredentials: true });
-  }
+}
 // serviceAPI.ts
 export const deleteOffer = async (userId: string, offerId: string) => {
     const url = `${API_URL}/offer/deleteOffer/`;
@@ -81,25 +82,19 @@ export const editOffer = async (formData: FormData) => {
             throw new Error('Fehler beim Bearbeiten des Angebots');
         }
     }
-};
+}
 
-export const fetchSlots = async () => {
-    const url = `${API_URL}/appointment`; // Richtig: Passend zu router.get("/")
+export const getAllsAppointment = () => {
+    const url = `${API_URL}/appointment/all`;
     return axios.get(url);
 };
 
-export const blockSlot = async (slotId: string) => {
-    const url = `${API_URL}/appointment/${slotId}`; // Korrigierte URL
-    return axios.patch(url, { status: "blocked" });
-};
+export const blockAppointment = (appointment: TAppointment) => {
+    const url = `${API_URL}/appointment/block`;
+    return axios.post(url, appointment);
+}
 
-
-export const unblockSlot = async (slotId: string) => {
-    const url = `${API_URL}/appointment/${slotId}`; // Richtig: Passend zu router.patch("/:slotId")
-    return axios.patch(url, { status: "available" });
-};
-
-export const confirmSlot = async (slotId: string) => {
-    const url = `${API_URL}/appointment/${slotId}/confirm`; // Richtig: Passend zu router.patch("/:slotId/confirm")
-    return axios.patch(url);
-};
+export const unblockAppointment = (appointment: TAppointment) => {
+    const url = `${API_URL}/appointment/unblock`;
+    return axios.delete(url, { data: appointment });
+}

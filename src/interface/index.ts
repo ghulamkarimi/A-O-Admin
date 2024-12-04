@@ -30,6 +30,7 @@ export interface IUser {
     verificationCode: string;
     isAccountVerified: boolean;
     createdAt: string; 
+    
 }
 export interface IUserInfo {
     userId: string;
@@ -50,3 +51,22 @@ export interface IChangePassword {
     newPassword: string;
     confirmPassword: string;
 }
+
+export interface  IAppointment {
+    _id: string
+    service: string;
+    date: string;
+    time: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phone: string;
+    comment: string;
+    licensePlate: string;
+    hsn: string;
+    tsn: string;
+    isBookedOrBlocked: boolean;
+    appointmnetId: string;  
+}
+
+export type TAppointment = Partial<IAppointment>;

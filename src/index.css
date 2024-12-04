@@ -6,4 +6,46 @@
     @apply bg-cover bg-center bg-no-repeat min-h-screen rounded-lg; 
 }
 
+/* Markiere gebuchte oder blockierte Tage im Kalender rot */
+.booked-day {
+    background-color: #ffcccc !important;
+}
+
+/* Markiere verfügbare Tage im Kalender grün */
+.available-day {
+    background-color: #ccffcc !important;
+}
+
+/* Styling für die Zeit-Slots */
+.time-slots {
+    margin-top: 20px;
+}
+
+.time-slots-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.time-slot {
+    padding: 10px 15px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    border: 1px solid #ccc;
+}
+
+/* Gebuchte Zeit-Slots rot markieren */
+.booked {
+    background-color: #ff4c4c;
+    color: white;
+    border: 1px solid #ff0000;
+}
+
+/* Verfügbare Zeit-Slots grün markieren */
+.available {
+    background-color: #28a745;
+    color: white;
+    border: 1px solid #008000;
+}
 
