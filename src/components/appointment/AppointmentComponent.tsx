@@ -35,11 +35,17 @@ const AdminCalendar = () => {
 
         if (isBookedOrBlocked) {
             // Falls der Termin gebucht/blockiert ist, freigeben
-            try {
-                const result = await dispatch(unblockAppointments(appointment)).unwrap();
-                NotificationService.success(`Der Termin um ${time} wurde erfolgreich freigegeben.`);
-            } catch (error) {
-                NotificationService.error(`Fehler beim Freigeben des Termins um ${time}.`);
+            // Finde das Appointment, um die appointmentId zu erhalten
+            const appointmentToUnblock = appointmentsForSelectedDate.find(appt => appt.time === time);
+            if (appointmentToUnblock && appointmentToUnblock._id) {
+                try {
+                    const result = await dispatch(unblockAppointments(appointmentToUnblock._id)).unwrap();
+                    NotificationService.success(`Der Termin um ${time} wurde erfolgreich freigegeben.`);
+                } catch (error) {
+                    NotificationService.error(`Fehler beim Freigeben des Termins um ${time}.`);
+                }
+            } else {
+                NotificationService.error(`Termin konnte nicht gefunden werden, um ihn freizugeben.`);
             }
         } else {
             // Falls der Termin verfügbar ist, blockieren

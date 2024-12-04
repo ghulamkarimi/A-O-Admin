@@ -2,7 +2,7 @@ import axios from 'axios';
 import { IChangePassword, TAppointment, TOffer, TUser } from '../interface/index';
 import { Socket, io } from 'socket.io-client';
 import axiosJWT from './axiosJwt';
-import Appointment from '../pages/Appointment';
+
 
 const API_URL = "http://localhost:7001";
 
@@ -94,7 +94,7 @@ export const blockAppointment = (appointment: TAppointment) => {
     return axios.post(url, appointment);
 }
 
-export const unblockAppointment = (appointment: TAppointment) => {
+export const unblockAppointment = (appointmentId: string) => {
     const url = `${API_URL}/appointment/unblock`;
-    return axios.delete(url, { data: appointment });
+    return axios.delete(url, { data: { appointmentId } });
 }

@@ -37,14 +37,15 @@ export const blockAppointments = createAsyncThunk('appointments/blockAppointment
     }
 });
 
-export const unblockAppointments = createAsyncThunk('appointments/unblockAppointments', async (appointment: TAppointment) => {
+export const unblockAppointments = createAsyncThunk('appointments/unblockAppointments', async (appointmentId: string) => {
     try {
-        const response = await unblockAppointment(appointment)
+        const response = await unblockAppointment(appointmentId);
         return response.data;
     } catch (error: any) {
-        return error?.response?.data?.message || "Failed to unblock appointments";
+        throw new Error(error?.response?.data?.message || "Failed to unblock appointments");
     }
 });
+
 
 const appointmentSlice = createSlice({
     name: "appointment",

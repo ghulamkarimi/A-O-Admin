@@ -66,7 +66,7 @@ export interface  IAppointment {
     hsn: string;
     tsn: string;
     isBookedOrBlocked: boolean;
-    appointmnetId: string;  
+    appointmentId: string;  
 }
 
 export type TAppointment = Partial<IAppointment>;
