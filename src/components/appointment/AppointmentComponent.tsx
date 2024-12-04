@@ -1,11 +1,14 @@
-import { useSelector } from "react-redux";
-import { displayAppointments } from "../../feuture/reducers/appointmentSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { displayAppointments, blockAppointments, unblockAppointments } from "../../feuture/reducers/appointmentSlice";
 import Calendar from "react-calendar";
 import 'react-calendar/dist/Calendar.css';
 import { useState } from "react";
+import { TAppointment } from "../../interface";
+import { NotificationService } from "../../service/NotificationService";
 
 const AdminCalendar = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const dispatch = useDispatch<any>();
     const appointments = useSelector(displayAppointments);
     const availableTimes = ["07:30", "09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00"];
 
@@ -21,11 +24,31 @@ const AdminCalendar = () => {
         setSelectedDate(value as Date);
     };
 
-    const handleTimeSlotClick = (time: string) => {
-        if (bookedOrBlockedTimes.includes(time)) {
-            alert(`Zeit ${time} ist bereits gebucht oder blockiert.`);
+    const handleTimeSlotClick = async (time: string) => {
+        const isBookedOrBlocked = bookedOrBlockedTimes.includes(time);
+
+        // Erstelle ein Appointment-Objekt
+        const appointment: TAppointment = {
+            date: selectedDate.toISOString(),
+            time,
+        };
+
+        if (isBookedOrBlocked) {
+            // Falls der Termin gebucht/blockiert ist, freigeben
+            try {
+                const result = await dispatch(unblockAppointments(appointment)).unwrap();
+                NotificationService.success(`Der Termin um ${time} wurde erfolgreich freigegeben.`);
+            } catch (error) {
+                NotificationService.error(`Fehler beim Freigeben des Termins um ${time}.`);
+            }
         } else {
-            alert(`Zeit ${time} ist verfügbar und kann gebucht werden.`);
+            // Falls der Termin verfügbar ist, blockieren
+            try {
+                const result = await dispatch(blockAppointments(appointment)).unwrap();
+                NotificationService.success(`Der Termin um ${time} wurde erfolgreich blockiert.`);
+            } catch (error) {
+                NotificationService.error(`Fehler beim Blockieren des Termins um ${time}.`);
+            }
         }
     };
 
@@ -68,7 +91,7 @@ const AdminCalendar = () => {
                 <div className="flex flex-wrap gap-2.5">
                     {availableTimes.map(time => {
                         const isBookedOrBlocked = bookedOrBlockedTimes.includes(time);
-                        const isDisabled = isBookedOrBlocked || isPastTime(time);
+                        const isDisabled = isPastTime(time);
                         return (
                             <button
                                 key={time}
