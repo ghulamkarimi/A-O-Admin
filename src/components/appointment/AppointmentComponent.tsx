@@ -63,13 +63,9 @@ const AdminCalendar = () => {
 
     // Hilfsfunktion zum Überprüfen, ob eine Zeit in der Vergangenheit liegt
     const isPastTime = (time: string) => {
-        if (selectedDate.toDateString() !== new Date().toDateString()) {
-            return false; // Prüfe nur für den heutigen Tag
-        }
-
         const [hours, minutes] = time.split(':').map(Number);
         const now = new Date();
-        const selectedTime = new Date();
+        const selectedTime = new Date(selectedDate);
         selectedTime.setHours(hours, minutes, 0, 0);
 
         return selectedTime < now;
@@ -81,8 +77,8 @@ const AdminCalendar = () => {
                 value={selectedDate}
                 onChange={(value) => handleDateChange(value as Date)}
                 tileDisabled={({ date }) => {
-                    // Vergangene Tage oder Sonntage deaktivieren
-                    return date < new Date(new Date().setHours(0, 0, 0, 0)) || date.getDay() === 0;
+                    // Vergangene Tage deaktivieren, außer Sonntag
+                    return date.getDay() === 0;
                 }}
                 tileClassName={({ date }) => {
                     // Markiere Tage mit gebuchten oder blockierten Terminen rot
@@ -129,34 +125,34 @@ const AdminCalendar = () => {
                                         </td>
                                         <td className="py-4 px-6 text-left">
                                             {appointmentDetails ? (
-                                                <div className="text-sm space-y-2">
+                                                <div className="text-sm space-y-1">
                                                     {appointmentDetails.email && (
                                                         <div>
                                                             <p className="font-semibold text-gray-900">Benutzer: {appointmentDetails.firstName} {appointmentDetails.lastName}</p>
-                                                            <p className="text-gray-800">Email: {appointmentDetails.email}</p>
+                                                            <p className="text-gray-800 font-semibold">Email: {appointmentDetails.email}</p>
                                                         </div>
                                                     )}
                                                     {appointmentDetails.service && (
-                                                        <p className="font-semibold text-gray-900">Service: <span className="font-normal text-gray-800">{appointmentDetails.service}</span></p>
+                                                        <p className="font-semibold text-gray-900">Service: <span>{appointmentDetails.service}</span></p>
                                                     )}
                                                     {appointmentDetails.licensePlate && (
-                                                        <p className="font-semibold text-gray-900">Kennzeichen: <span className="font-normal text-gray-800">{appointmentDetails.licensePlate}</span></p>
+                                                        <p className="font-semibold text-gray-900">Kennzeichen: <span>{appointmentDetails.licensePlate}</span></p>
                                                     )}
                                                     {appointmentDetails.email ? (
                                                         <>
                                                             {appointmentDetails.hsn ? (
-                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">{appointmentDetails.hsn}</span></p>
+                                                                <p className="font-semibold text-gray-900">HSN: <span>{appointmentDetails.hsn}</span></p>
                                                             ) : (
-                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">____</span></p>
+                                                                <p className="font-semibold text-gray-900">HSN: <span>____</span></p>
                                                             )}
                                                             {appointmentDetails.tsn ? (
-                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">{appointmentDetails.tsn}</span></p>
+                                                                <p className="font-semibold text-gray-900">TSN: <span>{appointmentDetails.tsn}</span></p>
                                                             ) : (
-                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">____</span></p>
+                                                                <p className="font-semibold text-gray-900">TSN: <span>____</span></p>
                                                             )}
                                                         </>
                                                     ) : (
-                                                        <p className="font-semibold text-gray-900">Details: <span className="font-normal text-gray-800">Vom Admin blockiert</span></p>
+                                                        <p className="font-semibold text-gray-900">Details: <span>Vom Admin blockiert</span></p>
                                                     )}
                                                 </div>
                                             ) : (
