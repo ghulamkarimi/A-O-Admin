@@ -119,14 +119,12 @@ const AdminCalendar = () => {
                                             <button
                                                 onClick={() => handleTimeSlotClick(time)}
                                                 disabled={isDisabled}
-                                                className={`px-6 py-3 rounded-full font-semibold transition-all shadow-md transform hover:scale-105 focus:outline-none
+                                                className={`w-full px-6 py-3 rounded-full font-semibold transition-all shadow-md transform hover:scale-105 focus:outline-none
                                                     ${isBookedOrBlocked ? 'bg-blue-800 hover:bg-blue-900 text-white' :
                                                     'bg-blue-600 hover:bg-blue-700 text-white'}
                                                     disabled:bg-gray-500 disabled:cursor-not-allowed`}
                                             >
-                                                {isBookedOrBlocked ?
-                                                    (appointmentDetails && appointmentDetails.email ? 'Gebucht' : 'Blockiert')
-                                                    : 'Blockieren'}
+                                                {isBookedOrBlocked ? 'Gebucht' : 'Blockieren'}
                                             </button>
                                         </td>
                                         <td className="py-4 px-6 text-left">
@@ -141,11 +139,24 @@ const AdminCalendar = () => {
                                                     {appointmentDetails.service && (
                                                         <p className="font-semibold text-gray-900">Service: <span className="font-normal text-gray-800">{appointmentDetails.service}</span></p>
                                                     )}
-                                                    {appointmentDetails.comment && (
-                                                        <p className="font-semibold text-gray-900">Kommentar: <span className="font-normal text-gray-800">{appointmentDetails.comment}</span></p>
-                                                    )}
                                                     {appointmentDetails.licensePlate && (
                                                         <p className="font-semibold text-gray-900">Kennzeichen: <span className="font-normal text-gray-800">{appointmentDetails.licensePlate}</span></p>
+                                                    )}
+                                                    {appointmentDetails.email ? (
+                                                        <>
+                                                            {appointmentDetails.hsn ? (
+                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">{appointmentDetails.hsn}</span></p>
+                                                            ) : (
+                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">____</span></p>
+                                                            )}
+                                                            {appointmentDetails.tsn ? (
+                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">{appointmentDetails.tsn}</span></p>
+                                                            ) : (
+                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">____</span></p>
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <p className="font-semibold text-gray-900">Details: <span className="font-normal text-gray-800">Vom Admin blockiert</span></p>
                                                     )}
                                                 </div>
                                             ) : (
