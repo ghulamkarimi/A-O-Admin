@@ -5,9 +5,12 @@ import 'react-calendar/dist/Calendar.css';
 import { useState } from "react";
 import { TAppointment } from "../../interface";
 import { NotificationService } from "../../service/NotificationService";
+import WarningModal from "../WarningModal";
 
 const AdminCalendar = () => {
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [showWarning, setShowWarning] = useState(false);
+    const [pendingAction, setPendingAction] = useState<{ time: string, action: 'unblock' | 'block', appointment?: TAppointment } | null>(null);
     const dispatch = useDispatch<any>();
     const appointments = useSelector(displayAppointments);
     const availableTimes = ["07:30", "09:00", "10:30", "12:00", "13:30", "15:00", "16:30", "18:00"];
@@ -24,41 +27,59 @@ const AdminCalendar = () => {
         setSelectedDate(value as Date);
     };
 
-    const handleTimeSlotClick = async (time: string) => {
+    const handleTimeSlotClick = (time: string) => {
         const isBookedOrBlocked = bookedOrBlockedTimes.includes(time);
-
-        // Erstelle ein Appointment-Objekt
-        const appointment: TAppointment = {
-            date: selectedDate.toISOString(),
-            time,
-        };
 
         if (isBookedOrBlocked) {
             // Falls der Termin gebucht/blockiert ist, freigeben
-            // Finde das Appointment, um die appointmentId zu erhalten
             const appointmentToUnblock = appointmentsForSelectedDate.find(appt => appt.time === time);
             if (appointmentToUnblock && appointmentToUnblock._id) {
-                try {
-                    await dispatch(unblockAppointments(appointmentToUnblock._id)).unwrap();
-                    NotificationService.success(`Der Termin um ${time} wurde erfolgreich freigegeben.`);
-                } catch (error) {
-                    NotificationService.error(`Fehler beim Freigeben des Termins um ${time}.`);
-                }
-            } else {
-                NotificationService.error(`Termin konnte nicht gefunden werden, um ihn freizugeben.`);
+                setPendingAction({
+                    time,
+                    action: 'unblock',
+                    appointment: appointmentToUnblock,
+                });
             }
         } else {
             // Falls der Termin verfügbar ist, blockieren
+            const appointment: TAppointment = {
+                date: selectedDate.toISOString(),
+                time,
+            };
+            setPendingAction({
+                time,
+                action: 'block',
+                appointment,
+            });
+        }
+        setShowWarning(true);
+    };
+
+    const handleConfirmAction = async () => {
+        if (pendingAction) {
             try {
-                await dispatch(blockAppointments(appointment)).unwrap();
-                NotificationService.success(`Der Termin um ${time} wurde erfolgreich blockiert.`);
+                if (pendingAction.action === 'unblock' && pendingAction.appointment) {
+                    if (pendingAction.appointment._id) {
+                        await dispatch(unblockAppointments(pendingAction.appointment._id)).unwrap();
+                    } else {
+                        throw new Error("Appointment ID is undefined");
+                    }
+                    NotificationService.success(`Der Termin um ${pendingAction.time} wurde erfolgreich freigegeben.`);
+                } else if (pendingAction.action === 'block' && pendingAction.appointment) {
+                    await dispatch(blockAppointments(pendingAction.appointment)).unwrap();
+                    NotificationService.success(`Der Termin um ${pendingAction.time} wurde erfolgreich blockiert.`);
+                }
             } catch (error) {
-                NotificationService.error(`Fehler beim Blockieren des Termins um ${time}.`);
+                NotificationService.error(`Fehler beim ${pendingAction.action === 'unblock' ? 'Freigeben' : 'Blockieren'} des Termins um ${pendingAction.time}.`);
             }
         }
+        setShowWarning(false);
+        setPendingAction(null);
+    };
 
-        // Emitte das `appointmentUpdated`-Ereignis nach jeder Änderung, um andere Clients zu benachrichtigen
-      
+    const handleCancelAction = () => {
+        setShowWarning(false);
+        setPendingAction(null);
     };
 
     // Hilfsfunktion zum Überprüfen, ob eine Zeit in der Vergangenheit liegt
@@ -125,34 +146,34 @@ const AdminCalendar = () => {
                                         </td>
                                         <td className="py-4 px-6 text-left">
                                             {appointmentDetails ? (
-                                                <div className="text-sm space-y-1">
+                                                <div className="text-sm space-y-2">
                                                     {appointmentDetails.email && (
                                                         <div>
                                                             <p className="font-semibold text-gray-900">Benutzer: {appointmentDetails.firstName} {appointmentDetails.lastName}</p>
-                                                            <p className="text-gray-800 font-semibold">Email: {appointmentDetails.email}</p>
+                                                            <p className="text-gray-800">Email: {appointmentDetails.email}</p>
                                                         </div>
                                                     )}
                                                     {appointmentDetails.service && (
-                                                        <p className="font-semibold text-gray-900">Service: <span>{appointmentDetails.service}</span></p>
+                                                        <p className="font-semibold text-gray-900">Service: <span className="font-normal text-gray-800">{appointmentDetails.service}</span></p>
                                                     )}
                                                     {appointmentDetails.licensePlate && (
-                                                        <p className="font-semibold text-gray-900">Kennzeichen: <span>{appointmentDetails.licensePlate}</span></p>
+                                                        <p className="font-semibold text-gray-900">Kennzeichen: <span className="font-normal text-gray-800">{appointmentDetails.licensePlate}</span></p>
                                                     )}
                                                     {appointmentDetails.email ? (
                                                         <>
                                                             {appointmentDetails.hsn ? (
-                                                                <p className="font-semibold text-gray-900">HSN: <span>{appointmentDetails.hsn}</span></p>
+                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">{appointmentDetails.hsn}</span></p>
                                                             ) : (
-                                                                <p className="font-semibold text-gray-900">HSN: <span>____</span></p>
+                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">____</span></p>
                                                             )}
                                                             {appointmentDetails.tsn ? (
-                                                                <p className="font-semibold text-gray-900">TSN: <span>{appointmentDetails.tsn}</span></p>
+                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">{appointmentDetails.tsn}</span></p>
                                                             ) : (
-                                                                <p className="font-semibold text-gray-900">TSN: <span>____</span></p>
+                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">____</span></p>
                                                             )}
                                                         </>
                                                     ) : (
-                                                        <p className="font-semibold text-gray-900">Details: <span>Vom Admin blockiert</span></p>
+                                                        <p className="font-semibold text-gray-900">Details: <span className="font-normal text-gray-800">Vom Admin blockiert</span></p>
                                                     )}
                                                 </div>
                                             ) : (
@@ -166,6 +187,13 @@ const AdminCalendar = () => {
                     </table>
                 </div>
             </div>
+            {showWarning && pendingAction && (
+                <WarningModal
+                    message={`Sind Sie sicher, dass Sie den Termin um ${pendingAction.time} ${pendingAction.action === 'unblock' ? 'freigeben' : 'blockieren'} möchten?`}
+                    onConfirm={handleConfirmAction}
+                    onCancel={handleCancelAction}
+                />
+            )}
         </div>
     );
 };
