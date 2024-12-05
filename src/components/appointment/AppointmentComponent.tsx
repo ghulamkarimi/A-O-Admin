@@ -95,59 +95,69 @@ const AdminCalendar = () => {
                 className="mb-8 border border-gray-300 rounded-lg shadow-lg"
             />
             <div className="mt-5 flex flex-col items-center w-full">
-                <h3 className="text-2xl font-bold mb-6">
+                <h3 className="text-3xl font-extrabold mb-6 text-gray-800">
                     Verfügbare Zeiten für {selectedDate.toLocaleDateString()}:
                 </h3>
-                <div className="grid grid-cols-1 gap-6 w-full">
-                    {availableTimes.map(time => {
-                        const isBookedOrBlocked = bookedOrBlockedTimes.includes(time);
-                        const isDisabled = isPastTime(time);
-                        const appointmentDetails = appointmentsForSelectedDate.find(appt => appt.time === time);
-                        return (
-                            <div
-                                key={time}
-                                className={`w-full p-6 rounded-lg border shadow-md transition-all transform hover:scale-105
-                                    ${isBookedOrBlocked ? 'bg-red-500 text-white border-red-700' :
-                                    isDisabled ? 'bg-gray-400 text-gray-100 border-gray-500 cursor-not-allowed' :
-                                    'bg-green-600 text-white border-green-700'}`}
-                            >
-                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
-                                    <span className="text-2xl font-semibold mb-4 md:mb-0">{time}</span>
-                                    <button
-                                        onClick={() => handleTimeSlotClick(time)}
-                                        disabled={isDisabled}
-                                        className={`px-6 py-3 rounded-full font-medium transition-colors
-                                            ${isBookedOrBlocked ? 'bg-blue-700  hover:bg-blue-800' :
-                                            'bg-blue-500 text-white hover:bg-blue-600'}
-                                            focus:outline-none disabled:bg-gray-500 disabled:cursor-not-allowed`}
-                                    >
-                                        {isBookedOrBlocked ?
-                                            (appointmentDetails && appointmentDetails.email ? 'Gebucht' : 'Von Admin blockiert')
-                                            : 'Blockieren'}
-                                    </button>
-                                    {appointmentDetails && (
-                                        <div className="mt-4 md:mt-0 md:ml-6 text-sm text-start text-black font-bold">
-                                            {appointmentDetails.email && (
-                                                <>
-                                                    <p className="font-semibold">Benutzer: {appointmentDetails.firstName} {appointmentDetails.lastName}</p>
-                                                    <p className="font-semibold">Email: {appointmentDetails.email}</p>
-                                                </>
+                <div className="w-full overflow-x-auto">
+                    <table className="min-w-full bg-white border rounded-lg shadow-md">
+                        <thead>
+                            <tr>
+                                <th className="py-3 px-6 bg-gray-200 font-bold uppercase text-gray-700 border-b text-left">Uhrzeit</th>
+                                <th className="py-3 px-6 bg-gray-200 font-bold uppercase text-gray-700 border-b text-center">Aktion</th>
+                                <th className="py-3 px-6 bg-gray-200 font-bold uppercase text-gray-700 border-b text-left">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {availableTimes.map(time => {
+                                const isBookedOrBlocked = bookedOrBlockedTimes.includes(time);
+                                const isDisabled = isPastTime(time);
+                                const appointmentDetails = appointmentsForSelectedDate.find(appt => appt.time === time);
+                                return (
+                                    <tr key={time} className={`border-b ${isBookedOrBlocked ? 'bg-red-100' : 'bg-green-100'} hover:bg-gray-100 transition-colors`}>
+                                        <td className="py-4 px-6 text-xl font-medium text-gray-800">{time}</td>
+                                        <td className="py-4 px-6 text-center">
+                                            <button
+                                                onClick={() => handleTimeSlotClick(time)}
+                                                disabled={isDisabled}
+                                                className={`px-4 py-3 rounded font-semibold transition-all shadow-md focus:outline-none
+                                                    ${isBookedOrBlocked ? 'bg-blue-700 hover:bg-blue-800 text-white' :
+                                                    'bg-blue-500 hover:bg-blue-600 text-white'}
+                                                    disabled:bg-gray-500 disabled:cursor-not-allowed`}
+                                            >
+                                                {isBookedOrBlocked ?
+                                                    (appointmentDetails && appointmentDetails.email ? 'Gebucht' : 'Blockiert')
+                                                    : 'Blockieren'}
+                                            </button>
+                                        </td>
+                                        <td className="py-2 px-4 text-left">
+                                            {appointmentDetails ? (
+                                                <div className="text-sm">
+                                                    {appointmentDetails.email && (
+                                                        <>
+                                                            <p className="font-semibold text-gray-800">Benutzer: {appointmentDetails.firstName} {appointmentDetails.lastName}</p>
+                                                            <p className="text-gray-600 font-semibold">Email: {appointmentDetails.email}</p>
+                                                        </>
+                                                    )}
+                                                    {appointmentDetails.service && (
+                                                        <p className="font-semibold text-gray-800">Service: <span className="f text-gray-600">{appointmentDetails.service}</span></p>
+                                                    )}
+                                                    
+                                                    {appointmentDetails.licensePlate && (
+                                                        <p className="font-semibold text-gray-800">Kennzeichen: <span className=" text-gray-600">{appointmentDetails.licensePlate}</span></p>
+                                                    )}
+                                                    {appointmentDetails.hsn && appointmentDetails.tsn && (
+                                                        <p className="font-semibold text-gray-800">HSN/TSN: <span className=" text-gray-600">{appointmentDetails.hsn}/{appointmentDetails.tsn}</span></p>
+                                                    )}
+                                                </div>
+                                            ) : (
+                                                <p className="text-gray-500">Keine Details verfügbar</p>
                                             )}
-                                            {appointmentDetails.service && (
-                                                <p className="font-semibold">Service: <span>{appointmentDetails.service}</span></p>
-                                            )}
-                                            {appointmentDetails.comment && (
-                                                <p className="font-semibold">Kommentar: <span>{appointmentDetails.comment}</span></p>
-                                            )}
-                                            {appointmentDetails.licensePlate && (
-                                                <p className="font-semibold">Kennzeichen: <span>{appointmentDetails.licensePlate}</span></p>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        );
-                    })}
+                                        </td>
+                                    </tr>
+                                );
+                            })}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
