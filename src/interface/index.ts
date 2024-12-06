@@ -30,6 +30,7 @@ export interface IUser {
     verificationCode: string;
     isAccountVerified: boolean;
     createdAt: string; 
+    customerNumber : string;
     
 }
 export interface IUserInfo {
@@ -98,6 +99,8 @@ export interface ICarBuy {
     carCategory: string;
     userId: string;
     createdAt: string;
+    carIdentificationNumber: string;
+   
 }
 
 export type TBuy = Partial<ICarBuy>;

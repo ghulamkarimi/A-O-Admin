@@ -68,7 +68,15 @@ const OfferList = () => {
                 "Nur Bilddateien erlaubt",
                 (value) =>
                     !value ||
-                    (value && ["image/jpeg", "image/png", "image/jpg"].includes((value as File).type))
+                    (value && ["image/jpeg",
+                        "image/png",
+                        "image/jpg",
+                        "image/heic",
+                        "image/heif",
+                        "image/webp",
+                        "image/gif",
+                        "image/tiff",
+                        "image/bmp"].includes((value as File).type))
             ),
         oldPrice: Yup.number().required("Alter Preis ist erforderlich"),
         newPrice: Yup.number().required("Neuer Preis ist erforderlich"),
@@ -231,12 +239,12 @@ const OfferList = () => {
                             key={offer._id}
                             className="bg-white shadow-md rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-shadow"
                         >
-                   <div className="flex justify-between items-center">
-                   <h2 className="text-xl font-bold text-gray-800 mb-2">{offer.title}</h2>
-                   <span className="text-red-500 font-bold">ab{' '}
-                     {new Date(offer.createdAt).toLocaleDateString()}
-                   </span>
-                   </div>
+                            <div className="flex justify-between items-center">
+                                <h2 className="text-xl font-bold text-gray-800 mb-2">{offer.title}</h2>
+                                <span className="text-red-500 font-bold">ab{' '}
+                                    {new Date(offer.createdAt).toLocaleDateString()}
+                                </span>
+                            </div>
                             <img
                                 className="w-full h-40 object-cover rounded-md mb-4"
                                 src={offer.imageUrl}
@@ -251,9 +259,9 @@ const OfferList = () => {
                                 <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm transition-all mr-2">
                                     Bearbeiten
                                 </button>
-                                <button 
-                                onClick={() => handleDeleteOffer(offer._id)}
-                                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm transition-all">
+                                <button
+                                    onClick={() => handleDeleteOffer(offer._id)}
+                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm transition-all">
                                     Löschen
                                 </button>
                             </div>
