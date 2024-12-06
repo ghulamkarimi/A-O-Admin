@@ -11,6 +11,7 @@ const HomePage = () => {
   const user = useSelector((state: RootState) => userId ? displayUserById(state, userId) : null);
   const latestOffer = offers ? Object.values(offers).slice(-1)[0] : null;
   const users = useSelector(displayUsers);
+  const countUsers = users ? Object.keys(users).length : 0;
   const lastUser = users ? Object.values(users).slice(-1)[0] : null;
 
   return (
@@ -34,7 +35,7 @@ const HomePage = () => {
         {/* Box für Benutzerverwaltung */}
         <div className="bg-green-800 text-white p-6 rounded-lg shadow-md flex flex-col justify-between">
           <h2 className="text-xl font-semibold mb-4">Benutzer verwalten</h2>
-          <p className="text-3xl font-bold">150</p>
+          <p className="text-3xl font-bold">{countUsers}</p>
           <Link
             to="/users"
             className="bg-green-600 text-white mt-4 py-2 px-4 rounded hover:bg-green-700 transition text-center"

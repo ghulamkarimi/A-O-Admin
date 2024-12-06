@@ -159,6 +159,9 @@ const AdminCalendar = () => {
                                                     {appointmentDetails.licensePlate && (
                                                         <p className="font-semibold text-gray-900">Kennzeichen: <span className="font-normal text-gray-800">{appointmentDetails.licensePlate}</span></p>
                                                     )}
+                                                    {appointmentDetails.phone && (
+                                                        <p className="font-semibold text-gray-900">Telefon: <span className="font-normal text-gray-800">{appointmentDetails.phone}</span></p>
+                                                    )}
                                                     {appointmentDetails.email ? (
                                                         <>
                                                             {appointmentDetails.hsn ? (
