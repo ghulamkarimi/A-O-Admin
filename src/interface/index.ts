@@ -70,3 +70,34 @@ export interface  IAppointment {
 }
 
 export type TAppointment = Partial<IAppointment>;
+
+export interface ICarBuy {
+    _id: string;
+    carTitle: string;
+    carId: string;
+    carPrice: string;
+    owner: number;
+    isSold: boolean;
+    carFirstRegistrationDay: string;
+    carImages:string[];
+    carDescription: string;
+    carKilometers: string;
+    carColor: string;
+    carAirConditioning: boolean;
+    carSeat: string;
+    damagedCar: boolean;
+    carNavigation: boolean;
+    carParkAssist: boolean;
+    carAccidentFree: boolean;
+    carGearbox: string;
+    carMotor: string;
+    carHorsePower: string;
+    carEuroNorm: string;
+    fuelType: string;
+    carTechnicalInspection: Date;
+    carCategory: string;
+    userId: string;
+    createdAt: string;
+}
+
+export type TBuy = Partial<ICarBuy>;

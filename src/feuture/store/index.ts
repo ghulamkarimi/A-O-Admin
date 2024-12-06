@@ -5,6 +5,8 @@ import appointmentReducer, { fetchAppointments } from "../reducers/appointmentSl
 import axiosJWT from "../../service/axiosJwt";
 import {  refreshToken } from "../../service";
 import { jwtDecode } from "jwt-decode";
+import carBuyReducer, { fetchCarBuys } from "../reducers/carBuySlice";
+
 
 
 interface DecodedToken {
@@ -16,6 +18,7 @@ export const store = configureStore({
     reducer: {
         offer: offerReducer,
         users: userReducer,
+        carBuys: carBuyReducer,
         appointment: appointmentReducer,
     },
     middleware: (getDefaultMiddleware) =>
@@ -46,6 +49,7 @@ axiosJWT.interceptors.request.use(
 
 store.dispatch(fetchOffers());
 store.dispatch(fetchUsers());
+store.dispatch(fetchCarBuys());
 store.dispatch(fetchAppointments());
 
 

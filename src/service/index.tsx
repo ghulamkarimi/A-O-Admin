@@ -11,7 +11,7 @@ export const socket: Socket = io(API_URL, {
 });
 
 
-
+// user
 export const userRegister = (user: TUser) => {
     const url = `${API_URL}/user/register`;
     return axios.post(url, user);
@@ -52,6 +52,8 @@ export const userLogout = () => {
     return axiosJWT.delete(url);
 }
 
+
+//offer
 export const getOffers = async () => {
     const url = `${API_URL}/offer/getOffers`;
     return axios.get(url, { withCredentials: true });
@@ -84,6 +86,7 @@ export const editOffer = async (formData: FormData) => {
     }
 }
 
+// appointment
 export const getAllsAppointment = () => {
     const url = `${API_URL}/appointment/all`;
     return axios.get(url);
@@ -97,4 +100,12 @@ export const blockAppointment = (appointment: TAppointment) => {
 export const unblockAppointment = (appointmentId: string) => {
     const url = `${API_URL}/appointment/unblock`;
     return axios.delete(url, { data: { appointmentId } });
+}
+
+
+// carBuy
+
+export const getCarBuys = () => {
+    const url = `${API_URL}/buy/allBuys`;
+    return axios.get(url);
 }
