@@ -75,16 +75,24 @@ export const deleteOffer = async (userId: string, offerId: string) => {
 export const editOffer = async (formData: FormData) => {
     const url = `${API_URL}/offer/editOffer`;
     try {
+        console.log("Sending FormData to:", url);
+        formData.forEach((value, key) => {
+            console.log(`${key}: ${value}`);
+        });
+
         const response = await axios.put(url, formData, { withCredentials: true });
         return response.data; // Rückgabe des aktualisierten Angebots
     } catch (error) {
         if (axios.isAxiosError(error)) {
+            console.error("Axios Error:", error.response?.data);
             throw new Error(error.response?.data?.message || 'Fehler beim Bearbeiten des Angebots');
         } else {
+            console.error("General Error:", error);
             throw new Error('Fehler beim Bearbeiten des Angebots');
         }
     }
-}
+};
+
 
 // appointment
 export const getAllsAppointment = () => {

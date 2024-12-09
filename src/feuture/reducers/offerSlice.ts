@@ -30,20 +30,20 @@ export const fetchOffers = createAsyncThunk("/offer/fetchOffers", async () => {
 export const createOffer = createAsyncThunk(
     "/offer/createOffer",
     async (formData: FormData, { rejectWithValue }) => {
-      try {
-        const response = await createOfferService(formData);
-        return response.data;
-      } catch (error: any) {
-        return rejectWithValue(error?.response?.data?.message || "Error creating offer");
-      }
+        try {
+            const response = await createOfferService(formData);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error?.response?.data?.message || "Error creating offer");
+        }
     }
-  );
-  export const deleteOfferApi = createAsyncThunk(
-    "/offer/deleteOffer", 
+);
+export const deleteOfferApi = createAsyncThunk(
+    "/offer/deleteOffer",
     async ({ userId, offerId }: { userId: string, offerId: string }, { rejectWithValue }) => {
         try {
             const response = await deleteOffer(userId, offerId);
-            return response.data; 
+            return response.data;
         } catch (error: any) {
             return rejectWithValue(error?.response?.data?.message || "Fehler beim Löschen des Angebots");
         }
@@ -51,10 +51,13 @@ export const createOffer = createAsyncThunk(
 );
 
 export const editOfferApi = createAsyncThunk(
-    'offers/editOfferApi', 
+    'offers/editOfferApi',
     async ({ offer, imageFile }: { offer: TOffer, imageFile?: File }, { rejectWithValue }) => {
         try {
             const formData = new FormData();
+            if (!offer.offerId || !offer.userId) {
+                throw new Error("Angebots-ID oder Benutzer-ID fehlt");
+            }
             // Füge die Felder aus dem Angebot und der Datei zur FormData hinzu
             formData.append('title', offer.title || "");
             formData.append('description', offer.description || "");
@@ -66,9 +69,9 @@ export const editOfferApi = createAsyncThunk(
 
             // Wenn ein Bild hochgeladen wurde, füge es der FormData hinzu
             if (imageFile) {
-                formData.append('imageUrl', imageFile);
+                formData.append('offerImage', imageFile);
             } else {
-                formData.append('imageUrl', offer.imageUrl || "");  // Verwende das alte Bild, falls kein neues hochgeladen wurde
+                formData.append('offerImage', offer.imageUrl || "");  // Verwende das alte Bild, falls kein neues hochgeladen wurde
             }
 
             // API-Aufruf zur Bearbeitung des Angebots
@@ -107,7 +110,15 @@ const offerSlice = createSlice({
             .addCase(deleteOfferApi.fulfilled, (state, action) => {
                 offerAdapter.removeOne(state, action.payload.offerId);
             })
-    }
+            builder.addCase(offerUpdated, (state, action) => {
+                const { id, changes } = action.payload;
+                const existingOffer = offerAdapter.getSelectors().selectById(state, id);
+                if (existingOffer) {
+                    Object.assign(existingOffer, changes);
+                }
+            });
+            
+    },
 });
 
 export const { offerCreated, offerUpdated, offerDeleted } = offerSlice.actions;

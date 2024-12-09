@@ -1,7 +1,6 @@
+import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../feuture/store";
-import { useEffect } from "react";
-import { socket } from "../service";
 import { Formik } from "formik";
 import * as Yup from "yup";
 import {
@@ -11,13 +10,39 @@ import {
     offerUpdated,
     createOffer,
     deleteOfferApi,
+    editOfferApi,
 } from "../feuture/reducers/offerSlice";
 import { NotificationService } from "../service/NotificationService";
+import { socket } from "../service";
+import { IOffer } from "../interface";
 
 const OfferList = () => {
     const dispatch = useDispatch<AppDispatch>();
     const offers = useSelector(displayOffers);
     const userId = localStorage.getItem("userId") || "";
+    useEffect(() => {
+        console.log("Offers:", offers); // Debugging
+    }, [offers]);
+    
+
+    const [editingOfferId, setEditingOfferId] = useState<string | null>(null);
+    const [editValues, setEditValues] = useState<{
+        title: string;
+        description: string;
+        oldPrice: number;
+        userId:string;
+        offerId:string;
+        newPrice: number;
+        imageUrl: File | null;
+    }>({
+        title: "",
+        description: "",
+        oldPrice: 0,
+        newPrice: 0,
+        userId:"",
+        offerId:"",
+        imageUrl: null,
+    });
 
     useEffect(() => {
         socket.connect();
@@ -52,31 +77,21 @@ const OfferList = () => {
         };
     }, [dispatch]);
 
-    // Formik Validierungsschema
     const validationSchema = Yup.object().shape({
         title: Yup.string().required("Titel ist erforderlich"),
         description: Yup.string().required("Beschreibung ist erforderlich"),
         imageUrl: Yup.mixed()
-            .required("Bild ist erforderlich")
             .test(
                 "fileSize",
                 "Die Datei ist zu groß",
-                (value) => !value || (value && (value as File).size <= 5 * 1024 * 1024) // 5MB Limit
+                (value) => !value || (value && (value as File).size <= 10 * 1024 * 1024) // 5MB Limit
             )
             .test(
                 "fileType",
                 "Nur Bilddateien erlaubt",
                 (value) =>
                     !value ||
-                    (value && ["image/jpeg",
-                        "image/png",
-                        "image/jpg",
-                        "image/heic",
-                        "image/heif",
-                        "image/webp",
-                        "image/gif",
-                        "image/tiff",
-                        "image/bmp"].includes((value as File).type))
+                    (value && ["image/jpeg", "image/png", "image/jpg", "image/webp"].includes((value as File).type))
             ),
         oldPrice: Yup.number().required("Alter Preis ist erforderlich"),
         newPrice: Yup.number().required("Neuer Preis ist erforderlich"),
@@ -89,6 +104,93 @@ const OfferList = () => {
         } catch (error: any) {
             NotificationService.error(error.message || "Fehler beim Löschen des Angebots.");
         }
+    };
+
+    const startEditing = (offer:IOffer) => {
+        console.log("Start Editing Offer:", offer); // Debugging
+        setEditingOfferId(offer._id);
+        setEditValues({
+            title: offer.title,
+            offerId: offer._id, // Angebot-ID korrekt setzen
+            userId: offer.userId, // Benutzer-ID korrekt setzen
+            description: offer.description,
+            oldPrice: offer.oldPrice,
+            newPrice: offer.newPrice,
+            imageUrl: null,
+        });
+        console.log("Edit Values after Start Editing:", {
+            title: offer.title,
+            offerId: offer._id,
+            userId: offer.userId,
+            description: offer.description,
+            oldPrice: offer.oldPrice,
+            newPrice: offer.newPrice,
+        });
+    };
+
+    const handleEditOffer = async (offerId: string) => {
+        console.log("Editing offer with ID:", offerId);
+        console.log("Edit Values Before API Call:", editValues);
+        
+        try {
+            if (!userId) {
+                throw new Error("Benutzer-ID fehlt.");
+            }
+    
+            if (!offerId) {
+                throw new Error("Angebots-ID fehlt.");
+            }
+    
+            const formData = new FormData();
+            formData.append("title", editValues.title);
+            formData.append("description", editValues.description);
+            formData.append("oldPrice", editValues.oldPrice.toString());
+            formData.append("newPrice", editValues.newPrice.toString());
+            formData.append("userId", editValues.userId); // Sicherstellen, dass userId gesetzt ist
+            formData.append("offerId",editValues.offerId); // Sicherstellen, dass offerId gesetzt ist
+    
+            if (editValues.imageUrl) {
+                formData.append("offerImage", editValues.imageUrl); // Feldname muss "offerImage" sein
+            }
+            console.log("Image File:", editValues.imageUrl);
+
+    
+            const response = await dispatch(editOfferApi({ 
+                offer: { 
+                    _id: offerId, 
+                    userId: editValues.userId,
+                    offerId: editValues.offerId,
+                    title: editValues.title,
+                    description: editValues.description,
+                    oldPrice: editValues.oldPrice, // Konvertiere zu number
+                    newPrice: editValues.newPrice, // Konvertiere zu number
+                },
+                imageFile: editValues.imageUrl || undefined
+            })).unwrap();
+    
+            NotificationService.success(response.message || "Angebot erfolgreich bearbeitet!");
+            console.log("rsponse nach der anfrage zur backend :",response)
+            setEditingOfferId(null); // Bearbeitungsmodus verlassen
+        } catch (error: any) {
+            NotificationService.error(error.message || "Fehler beim Bearbeiten des Angebots.");
+            console.log("error beim bearbeiten des angebots",error)
+        }
+    };
+    
+
+   
+    
+    const cancelEditing = () => {
+        setEditingOfferId(null);
+        setEditValues({
+            title: "",
+            description: "",
+            oldPrice: 0,
+            newPrice: 0,
+            userId:"",
+            offerId:"",
+            imageUrl: null,
+        });
     };
 
     return (
@@ -235,36 +337,102 @@ const OfferList = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {offers.length > 0 ? (
                     offers.map((offer) => (
+                        
                         <div
                             key={offer._id}
                             className="bg-white shadow-md rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-shadow"
                         >
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-xl font-bold text-gray-800 mb-2">{offer.title}</h2>
-                                <span className="text-red-500 font-bold">ab{' '}
-                                    {new Date(offer.createdAt).toLocaleDateString()}
-                                </span>
-                            </div>
-                            <img
-                                className="w-full h-40 object-cover rounded-md mb-4"
-                                src={offer.imageUrl}
-                                alt={offer.title}
-                            />
-                            <p className="text-gray-600 mb-2">{offer.description}</p>
-                            <div className="flex justify-between items-center">
-                                <div>
-                                    <p className="text-gray-500 line-through">{offer.oldPrice} €</p>
-                                    <p className="text-red-500 font-semibold">{offer.newPrice} €</p>
-                                </div>
-                                <button className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm transition-all mr-2">
-                                    Bearbeiten
-                                </button>
-                                <button
-                                    onClick={() => handleDeleteOffer(offer._id)}
-                                    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm transition-all">
-                                    Löschen
-                                </button>
-                            </div>
+                            {editingOfferId === offer._id ? (
+                                <form
+                                encType="multipart/form-data"
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        handleEditOffer(offer._id);
+                                    }}
+                                    className="space-y-4"
+                                >
+                                    <input
+                                        type="text"
+                                        className="w-full border p-2 rounded"
+                                        value={editValues.title}
+                                        onChange={(e) => setEditValues({ ...editValues, title: e.target.value })}
+                                    />
+                                    <textarea
+                                        className="w-full border p-2 rounded"
+                                        value={editValues.description}
+                                        onChange={(e) => setEditValues({ ...editValues, description: e.target.value })}
+                                    />
+                                    <input
+                                        type="number"
+                                        className="w-full border p-2 rounded"
+                                        value={editValues.oldPrice}
+                                        onChange={(e) => setEditValues({ ...editValues, oldPrice: Number(e.target.value) })}
+                                    />
+                                    <input
+                                        type="number"
+                                        className="w-full border p-2 rounded"
+                                        value={editValues.newPrice}
+                                        onChange={(e) => setEditValues({ ...editValues, newPrice: Number(e.target.value) })}
+                                    />
+                                    <input
+                                        type="file"
+                                        className="w-full border p-2 rounded"
+                                        onChange={(e) => {
+                                            if (e.currentTarget.files) {
+                                                setEditValues({
+                                                    ...editValues,
+                                                    imageUrl: e.currentTarget.files[0],
+                                                });
+                                            }
+                                        }}
+                                    />
+                                    <div className="flex space-x-2">
+                                        <button
+                                            type="button"
+                                            className="bg-gray-500 text-white px-4 py-2 rounded"
+                                            onClick={cancelEditing}
+                                        >
+                                            Abbrechen
+                                        </button>
+                                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
+                                            Speichern
+                                        </button>
+                                    </div>
+                                </form>
+                            ) : (
+                                <>
+                                    <div className="flex justify-between items-center">
+                                        <h2 className="text-xl font-bold text-gray-800 mb-2">{offer.title}</h2>
+                                        <span className="text-red-500 font-bold">ab{' '}
+                                            {new Date(offer.createdAt).toLocaleDateString()}
+                                        </span>
+                                    </div>
+                                    <img
+                                        className="w-full h-40 object-cover rounded-md mb-4"
+                                        src={offer.imageUrl}
+                                        alt={offer.title}
+                                    />
+                                    <p className="text-gray-600 mb-2">{offer.description}</p>
+                                    <div className="flex justify-between items-center">
+                                        <div>
+                                            <p className="text-gray-500 line-through">{offer.oldPrice} €</p>
+                                            <p className="text-red-500 font-semibold">{offer.newPrice} €</p>
+                                        </div>
+                                        <button
+                                            onClick={() => startEditing(offer)}
+                                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm transition-all mr-2"
+                                        >
+                                            Bearbeiten
+                                        </button>
+                                        <button
+                                            onClick={() => handleDeleteOffer(offer._id)}
+                                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm transition-all"
+                                        >
+                                            Löschen
+                                        </button>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     ))
                 ) : (
