@@ -6,12 +6,14 @@ import { NotificationService } from "../service/NotificationService";
 import { useNavigate } from "react-router-dom";
 import { ICarBuy } from "../interface";
 import { AppDispatch } from "../feuture/store";
+import { useRef, useState } from "react";
 
 const CreateCarBuy = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
-
+  const [imagesPreview, setImagesPreview] = useState<string[]>([]);
+  const inputRef = useRef<HTMLInputElement | null>(null)
   const initialValues: Partial<ICarBuy> = {
     carTitle: "",
     carCategory: "",
@@ -87,6 +89,31 @@ const CreateCarBuy = () => {
       NotificationService.error(error.message || "Fehler beim Erstellen des Fahrzeugs.");
     }
   };
+
+  const handleImageChange = (files: FileList | null, setFieldValue: any) => {
+    if (files) {
+      const selectedFiles = Array.from(files);
+      setFieldValue("carImages", selectedFiles);
+      const previews = selectedFiles.map((file) => URL.createObjectURL(file));
+      setImagesPreview(previews);
+    }
+  }
+
+  const handleRemoveImage = (index: number, setFieldValue: any) => {
+    // Entfernt das Bild aus der Vorschau
+    const updatedPreviews = imagesPreview.filter((_, i) => i !== index);
+
+    // Entfernt das Bild auch aus Formik-Daten
+    setFieldValue("carImages", (prevImages: File[]) =>
+      prevImages.filter((_, i) => i !== index)
+    );
+
+    // Aktualisiert die Vorschau
+    setImagesPreview(updatedPreviews);
+
+
+  };
+
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -237,16 +264,51 @@ const CreateCarBuy = () => {
               />
             </div>
 
-            <input
-              type="file"
-              name="carImages"
-              multiple
-              onChange={(e) => {
-                setFieldValue("carImages", Array.from(e.target.files || []));
-              }}
-              className="p-2 border rounded-md col-span-2"
-            />
-            <ErrorMessage name="carImages" component="div" className="text-red-500 text-sm" />
+            <div className="col-span-2">
+              <label htmlFor="carImages" className="block text-gray-700 font-semibold mb-2">
+                Bilder hochladen
+              </label>
+              <button
+                type="button"
+                onClick={() => inputRef.current?.click()}
+                className="bg-blue-500 text-white px-4 py-2 rounded-md"
+              >
+                Dateien auswählen
+              </button>
+              <input
+                type="file"
+                id="carImages"
+                ref={inputRef}
+                multiple
+                onChange={(e) => handleImageChange(e.target.files, setFieldValue)}
+                className="hidden"
+              />
+              <p className="text-gray-600 mt-2">
+                {imagesPreview.length > 0
+                  ? `${imagesPreview.length} Datei(en) ausgewählt`
+                  : "Keine Datei ausgewählt"}
+              </p>
+
+              {/* Bildvorschau */}
+              <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
+                {imagesPreview.map((src, index) => (
+                  <div key={index} className="relative">
+                    <img
+                      src={src}
+                      alt={`Preview ${index + 1}`}
+                      className="w-full h-32 object-cover rounded-md"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(index, setFieldValue)}
+                      className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs"
+                    >
+                      ✕
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
 
             <div className="flex items-center gap-2">
               <Field type="checkbox" name="carAirConditioning" />
