@@ -95,13 +95,13 @@ const UpdateCarBuy = () => {
           formData.append(key, String(value));
         }
       });
-
+      formData.append("keepImages", JSON.stringify(imagesPreview));
       formData.append("carId", id!);
       formData.append("userId", userId!);
 
       const response: any = await dispatch(updateCarBuyApi(formData)).unwrap();
       NotificationService.success(response.message || "Fahrzeug erfolgreich aktualisiert!");
-    
+      navigate("/carBuy");
     } catch (error: any) {
       NotificationService.error(error.message || "Fehler beim Aktualisieren des Fahrzeugs.");
     }

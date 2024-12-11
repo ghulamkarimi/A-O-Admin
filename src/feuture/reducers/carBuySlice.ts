@@ -1,7 +1,7 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
-import { ICarBuy} from "../../interface";
-import {  RootState } from "../store/index";
-import { createBuyCar, getCarBuys, updateCarBuy } from '../../service/index';
+import { ICarBuy } from "../../interface";
+import { RootState } from "../store/index";
+import { createBuyCar, getCarBuys, updateCarBuy, deleteCarBuy } from '../../service/index';
 
 interface carBuyState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -48,13 +48,21 @@ export const updateCarBuyApi = createAsyncThunk("carBuy/updateCarBuyApi", async 
     }
 })
 
- 
+export const deleteCarBuyApi = createAsyncThunk("carBuy/deleteCarBuyApi", async ({ userId, carBuyId }: { userId: string, carBuyId: string }, { rejectWithValue }) => {
+    try {
+        const response = await deleteCarBuy(userId, carBuyId);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error?.response?.data?.message || "Error deleting carBuy");
+    }
+})
+
 
 const carBuySlice = createSlice({
     name: 'carBuy',
     initialState,
     reducers: {
-       
+
     },
     extraReducers: (builder) => {
         builder
@@ -70,7 +78,7 @@ const carBuySlice = createSlice({
                 state.status = 'failed';
                 state.error = action.error.message as string || "Error fetching carBuys";
             })
-            .addCase(createCarBuyApi.fulfilled,(state,action)=> {
+            .addCase(createCarBuyApi.fulfilled, (state, action) => {
                 carBuyAdapter.addOne(state, action.payload);
                 state.status = 'succeeded';
             })
@@ -78,7 +86,8 @@ const carBuySlice = createSlice({
                 carBuyAdapter.updateOne(state, action.payload);
                 state.status = 'succeeded';
             })
-          
+
+
 
     }
 })

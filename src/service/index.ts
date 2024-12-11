@@ -127,3 +127,8 @@ export const createBuyCar = async (FormData: FormData)=> {
     const url = `${API_URL}/buy/update`;
     return axios.put(url, FormData, { withCredentials: true });
 }
+
+export const deleteCarBuy = async (usrId: string,carId:string) => {
+     const url = `${API_URL}/buy/delete`;
+        return axios.delete(url, {data:{usrId,carId}});
+}

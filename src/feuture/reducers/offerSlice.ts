@@ -1,8 +1,8 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
 import { IOffer, TOffer } from "../../interface";
-import { RootState, AppDispatch } from "../store/index"; // AppDispatch importieren
+import { RootState, AppDispatch } from "../store/index";
 import { getOffers, createOffer as createOfferService, deleteOffer, editOffer } from "../../service";
-import { socket } from "../../service"; // Verwende die korrekte Instanz von socket
+import { socket } from "../../service"; 
 
 interface OfferState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';

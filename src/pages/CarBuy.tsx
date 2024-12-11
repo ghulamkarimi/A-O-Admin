@@ -71,7 +71,8 @@ const CarBuy = () => {
               </th>
               <th className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 text-left">
                 KMstand
-              </th>
+              </th> 
+             
             </tr>
           </thead>
           <tbody>
