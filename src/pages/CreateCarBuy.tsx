@@ -84,7 +84,7 @@ const CreateCarBuy = () => {
 
       const response: any = await dispatch(createCarBuyApi(formData)).unwrap();
       NotificationService.success(response.message || "Fahrzeug erfolgreich erstellt!");
-      navigate("/car-buy");
+      navigate("/carBuy");
     } catch (error: any) {
       NotificationService.error(error.message || "Fehler beim Erstellen des Fahrzeugs.");
     }
@@ -100,15 +100,10 @@ const CreateCarBuy = () => {
   }
 
   const handleRemoveImage = (index: number, setFieldValue: any) => {
-    // Entfernt das Bild aus der Vorschau
     const updatedPreviews = imagesPreview.filter((_, i) => i !== index);
-
-    // Entfernt das Bild auch aus Formik-Daten
     setFieldValue("carImages", (prevImages: File[]) =>
       prevImages.filter((_, i) => i !== index)
     );
-
-    // Aktualisiert die Vorschau
     setImagesPreview(updatedPreviews);
 
 
@@ -316,7 +311,7 @@ const CreateCarBuy = () => {
             </div>
             <div className="flex items-center gap-2">
               <Field type="checkbox" name="damagedCar" />
-              <label>Beschädigt</label>
+              <label>unbeschädigt</label>
             </div>
 
             <div className="flex items-center gap-2">
