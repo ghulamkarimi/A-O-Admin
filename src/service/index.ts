@@ -29,7 +29,7 @@ export const userLogin = (user: TUser) => {
 
 export const refreshToken = () => {
     const url = `${API_URL}/user/refreshToken`;
-    return axios.get(url, { withCredentials: true }); // Mit Credentials senden
+    return axios.get(url, { withCredentials: true }); 
 };
 
 export const requestPasswordReset = (email: string) => {
@@ -67,7 +67,7 @@ export const createOffer = async (formData: FormData) => {
 export const deleteOffer = async (userId: string, offerId: string) => {
     const url = `${API_URL}/offer/deleteOffer/`;
     return axios.delete(url, {
-        data: { userId, offerId },  // userId und offerId im Request-Body
+        data: { userId, offerId },  
     });
 };
 
@@ -81,7 +81,7 @@ export const editOffer = async (formData: FormData) => {
         });
 
         const response = await axios.put(url, formData, { withCredentials: true });
-        return response.data; // Rückgabe des aktualisierten Angebots
+        return response.data; 
     } catch (error) {
         if (axios.isAxiosError(error)) {
             console.error("Axios Error:", error.response?.data);
@@ -128,7 +128,12 @@ export const createBuyCar = async (FormData: FormData)=> {
     return axios.put(url, FormData, { withCredentials: true });
 }
 
-export const deleteCarBuy = async (usrId: string,carId:string) => {
-     const url = `${API_URL}/buy/delete`;
-        return axios.delete(url, {data:{usrId,carId}});
-}
+export const deleteCarBuy = async (userId: string, carId: string) => {
+    const url = `${API_URL}/buy/delete`;
+    return axios.delete(url, {
+        data: { userId, carId },
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    });
+};

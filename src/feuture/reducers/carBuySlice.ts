@@ -48,14 +48,17 @@ export const updateCarBuyApi = createAsyncThunk("carBuy/updateCarBuyApi", async 
     }
 })
 
-export const deleteCarBuyApi = createAsyncThunk("carBuy/deleteCarBuyApi", async ({ userId, carBuyId }: { userId: string, carBuyId: string }, { rejectWithValue }) => {
-    try {
-        const response = await deleteCarBuy(userId, carBuyId);
-        return response.data;
-    } catch (error: any) {
-        return rejectWithValue(error?.response?.data?.message || "Error deleting carBuy");
+export const deleteCarBuyApi = createAsyncThunk(
+    "carBuy/deleteCarBuyApi",
+    async ({ userId, carBuyId }: { userId: string, carBuyId: string }, { rejectWithValue }) => {
+        try {
+            const response = await deleteCarBuy(userId, carBuyId);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error?.response?.data?.message || "Error deleting carBuy");
+        }
     }
-})
+);
 
 
 const carBuySlice = createSlice({

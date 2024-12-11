@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { updateCarBuyApi, displayCarBuyById } from "../feuture/reducers/carBuySlice";
+import { updateCarBuyApi, displayCarBuyById, deleteCarBuyApi } from "../feuture/reducers/carBuySlice";
 import { NotificationService } from "../service/NotificationService";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../feuture/store";
@@ -123,6 +123,19 @@ const UpdateCarBuy = () => {
     );
     setImagesPreview(updatedPreviews);
   };
+
+  const handleDeleteCar = async () => {
+    try {
+      if (!userId) {
+        throw new Error("User ID is missing");
+      }
+      const response = await dispatch(deleteCarBuyApi({ userId: userId, carBuyId: id! })).unwrap();
+      NotificationService.success(response.message || "Fahrzeug erfolgreich gelöscht!");
+      navigate("/carBuy");
+    } catch (error: any) {
+      NotificationService.error(error.message || "Fehler beim Löschen des Fahrzeugs.");
+    }
+  }
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -307,7 +320,7 @@ const UpdateCarBuy = () => {
                 onChange={(e) => handleImageChange(e.target.files, setFieldValue)}
                 className="hidden"
               />
-                            <p className="text-gray-600 mt-2">
+              <p className="text-gray-600 mt-2">
                 {imagesPreview.length > 0
                   ? `${imagesPreview.length} Datei(en) ausgewählt`
                   : "Keine Datei ausgewählt"}
@@ -364,10 +377,19 @@ const UpdateCarBuy = () => {
               >
                 Fahrzeug aktualisieren
               </button>
+
             </div>
           </Form>
         )}
       </Formik>
+      <div className="my-2">
+        <button
+          onClick={handleDeleteCar}
+          className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-md w-full"
+        >
+          Löchen
+        </button>
+      </div>
     </div>
   );
 };
