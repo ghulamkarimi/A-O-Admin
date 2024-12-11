@@ -8,7 +8,7 @@ import { ICarBuy } from "../interface";
 import { AppDispatch } from "../feuture/store";
 import { useRef, useState } from "react";
 
-const CreateCarBuy = () => {
+const CreateCarBuy = ({ isEdit = false }: { isEdit?: boolean }) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");

@@ -110,6 +110,15 @@ const CarBuy = () => {
                   <td className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700">
                     {car.carKilometers} km
                   </td>
+                  <td className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 text-center">
+                    <button
+                      onClick={() => navigate(`/edit-car/${car._id}`)}
+                      className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-3 py-1 rounded-md"
+                    >
+                      Bearbeiten
+                    </button>
+                  </td>
+
                 </tr>
               ))
             ) : (

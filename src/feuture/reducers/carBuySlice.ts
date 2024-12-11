@@ -39,6 +39,15 @@ export const createCarBuyApi = createAsyncThunk("carBuy/createCarBuyApi", async 
     }
 })
 
+export const updateCarBuyApi = createAsyncThunk("carBuy/updateCarBuyApi", async (formData: FormData, { rejectWithValue }) => {
+    try {
+        const response = await createBuyCar(formData);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error?.response?.data?.message || "Error updating carBuy");
+    }
+})
+
  
 
 const carBuySlice = createSlice({
@@ -63,6 +72,10 @@ const carBuySlice = createSlice({
             })
             .addCase(createCarBuyApi.fulfilled,(state,action)=> {
                 carBuyAdapter.addOne(state, action.payload);
+                state.status = 'succeeded';
+            })
+            .addCase(updateCarBuyApi.fulfilled, (state, action) => {
+                carBuyAdapter.updateOne(state, action.payload);
                 state.status = 'succeeded';
             })
           

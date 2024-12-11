@@ -123,4 +123,7 @@ export const createBuyCar = async (FormData: FormData)=> {
     return axios.post(url, FormData, { withCredentials: true });
 }
 
- 
+ export const updateCarBuy = async (FormData: FormData) => {
+    const url = `${API_URL}/buy/update`;
+    return axios.put(url, FormData, { withCredentials: true });
+}

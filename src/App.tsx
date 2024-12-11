@@ -58,6 +58,7 @@ const App = () => {
   <Route path="/user-details/:userId" element={<ProtectedRoute><UserDetails  /></ProtectedRoute>} />
   <Route path="/carBuy" element={<ProtectedRoute><CarBuy /></ProtectedRoute>} />
   <Route path="/create-car" element={<ProtectedRoute><CreateCarBuy /></ProtectedRoute>} />
+  <Route path="/edit-car/:id"element={<ProtectedRoute><CreateCarBuy isEdit /></ProtectedRoute>} />
   <Route path="/carRent" element={<ProtectedRoute><CarRent /></ProtectedRoute>} />
    <Route path="/forgetPassword" element={<PasswordResetPage />} />
    <Route path="/logout" element={<LogoutComponent />} />
