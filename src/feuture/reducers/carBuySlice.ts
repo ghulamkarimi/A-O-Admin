@@ -1,7 +1,7 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
 import { ICarBuy} from "../../interface";
 import {  RootState } from "../store/index";
-import { createBuyCar, getCarBuys } from '../../service/index';
+import { createBuyCar, getCarBuys, updateCarBuy } from '../../service/index';
 
 interface carBuyState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -41,7 +41,7 @@ export const createCarBuyApi = createAsyncThunk("carBuy/createCarBuyApi", async 
 
 export const updateCarBuyApi = createAsyncThunk("carBuy/updateCarBuyApi", async (formData: FormData, { rejectWithValue }) => {
     try {
-        const response = await createBuyCar(formData);
+        const response = await updateCarBuy(formData);
         return response.data;
     } catch (error: any) {
         return rejectWithValue(error?.response?.data?.message || "Error updating carBuy");

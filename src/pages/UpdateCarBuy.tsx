@@ -1,44 +1,58 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { createCarBuyApi } from "../feuture/reducers/carBuySlice";
+import { updateCarBuyApi, displayCarBuyById } from "../feuture/reducers/carBuySlice";
 import { NotificationService } from "../service/NotificationService";
-import { useNavigate } from "react-router-dom";
-import { ICarBuy } from "../interface";
-import { AppDispatch } from "../feuture/store";
-import { useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
+import { RootState, AppDispatch } from "../feuture/store";
+import { useEffect, useRef, useState } from "react";
 
-const CreateCarBuy = () => {
+const UpdateCarBuy = () => {
+  const { id } = useParams<{ id: string }>();
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
-  const inputRef = useRef<HTMLInputElement | null>(null)
-  const initialValues: Partial<ICarBuy> = {
-    carTitle: "",
-    carCategory: "",
-    carPrice: "",
-    owner: "",
-    carIdentificationNumber: "",
-    carDescription: "",
-    carKilometers: "",
-    carColor: "",
-    fuelType: "",
-    carGearbox: "",
-    carMotor: "",
-    carHorsePower: "",
-    carEuroNorm: "",
-    carFirstRegistrationDay: new Date().toISOString().split("T")[0],
-    carTechnicalInspection: new Date().toISOString().split("T")[0],
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const userId = localStorage.getItem("userId");
+
+  const car = useSelector((state: RootState) =>
+    id ? displayCarBuyById(state, id) : null
+  );
+
+  useEffect(() => {
+    if (car?.carImages) {
+      setImagesPreview(car.carImages.filter((image): image is string => typeof image === 'string'));
+    }
+  }, [car]);
+
+  if (!car) {
+    return <p>Fahrzeugdaten werden geladen...</p>;
+  }
+
+  const initialValues = {
+    carTitle: car.carTitle,
+    carCategory: car.carCategory,
+    carPrice: car.carPrice,
+    owner: car.owner,
+    carIdentificationNumber: car.carIdentificationNumber,
+    carDescription: car.carDescription,
+    carKilometers: car.carKilometers,
+    carColor: car.carColor,
+    fuelType: car.fuelType,
+    carGearbox: car.carGearbox,
+    carMotor: car.carMotor,
+    carHorsePower: car.carHorsePower,
+    carEuroNorm: car.carEuroNorm,
+    carFirstRegistrationDay: car.carFirstRegistrationDay,
+    carTechnicalInspection: car.carTechnicalInspection,
     carImages: [] as File[],
-    carAirConditioning: false,
-    carNavigation: false,
-    carParkAssist: false,
-    carAccidentFree: true,
-    carSeat: "",
-    damagedCar: false,
-    isSold: false,
-    userId: userId || "",
+    carAirConditioning: car.carAirConditioning,
+    carNavigation: car.carNavigation,
+    carParkAssist: car.carParkAssist,
+    carAccidentFree: car.carAccidentFree,
+    carSeat: car.carSeat,
+    damagedCar: car.damagedCar,
+    isSold: car.isSold,
   };
 
   const validationSchema = Yup.object({
@@ -69,7 +83,7 @@ const CreateCarBuy = () => {
       .required("Technische Inspektion ist erforderlich"),
   });
 
-  const handleSubmit = async (values: Partial<ICarBuy>) => {
+  const handleSubmit = async (values: typeof initialValues) => {
     try {
       const formData = new FormData();
       Object.entries(values).forEach(([key, value]) => {
@@ -82,11 +96,14 @@ const CreateCarBuy = () => {
         }
       });
 
-      const response: any = await dispatch(createCarBuyApi(formData)).unwrap();
-      NotificationService.success(response.message || "Fahrzeug erfolgreich erstellt!");
-      navigate("/carBuy");
+      formData.append("carId", id!);
+      formData.append("userId", userId!);
+
+      const response: any = await dispatch(updateCarBuyApi(formData)).unwrap();
+      NotificationService.success(response.message || "Fahrzeug erfolgreich aktualisiert!");
+    
     } catch (error: any) {
-      NotificationService.error(error.message || "Fehler beim Erstellen des Fahrzeugs.");
+      NotificationService.error(error.message || "Fehler beim Aktualisieren des Fahrzeugs.");
     }
   };
 
@@ -97,7 +114,7 @@ const CreateCarBuy = () => {
       const previews = selectedFiles.map((file) => URL.createObjectURL(file));
       setImagesPreview(previews);
     }
-  }
+  };
 
   const handleRemoveImage = (index: number, setFieldValue: any) => {
     const updatedPreviews = imagesPreview.filter((_, i) => i !== index);
@@ -105,14 +122,11 @@ const CreateCarBuy = () => {
       prevImages.filter((_, i) => i !== index)
     );
     setImagesPreview(updatedPreviews);
-
-
   };
-
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
-      <h1 className="text-4xl font-bold mb-6 text-gray-800">Neues Fahrzeug erstellen</h1>
+      <h1 className="text-4xl font-bold mb-6 text-gray-800">Fahrzeug bearbeiten</h1>
       <Formik
         initialValues={initialValues}
         validationSchema={validationSchema}
@@ -120,7 +134,6 @@ const CreateCarBuy = () => {
       >
         {({ setFieldValue }) => (
           <Form className="grid grid-cols-1 md:grid-cols-2 gap-4 bg-white p-6 rounded-lg shadow-md">
-            {/* Alle Formularfelder */}
             <Field
               type="text"
               name="carTitle"
@@ -167,7 +180,11 @@ const CreateCarBuy = () => {
               placeholder="Beschreibung"
               className="p-2 border rounded-md col-span-2"
             />
-            <ErrorMessage name="carDescription" component="div" className="text-red-500 text-sm" />
+            <ErrorMessage
+              name="carDescription"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
             <Field
               type="text"
@@ -175,7 +192,11 @@ const CreateCarBuy = () => {
               placeholder="Kilometerstand"
               className="p-2 border rounded-md"
             />
-            <ErrorMessage name="carKilometers" component="div" className="text-red-500 text-sm" />
+            <ErrorMessage
+              name="carKilometers"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
             <Field
               type="text"
@@ -215,7 +236,11 @@ const CreateCarBuy = () => {
               placeholder="Leistung (PS)"
               className="p-2 border rounded-md"
             />
-            <ErrorMessage name="carHorsePower" component="div" className="text-red-500 text-sm" />
+            <ErrorMessage
+              name="carHorsePower"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
             <Field
               type="text"
@@ -223,7 +248,11 @@ const CreateCarBuy = () => {
               placeholder="EURO Norm"
               className="p-2 border rounded-md"
             />
-            <ErrorMessage name="carEuroNorm" component="div" className="text-red-500 text-sm" />
+            <ErrorMessage
+              name="carEuroNorm"
+              component="div"
+              className="text-red-500 text-sm"
+            />
 
             <div className="flex flex-col">
               <label htmlFor="carFirstRegistrationDay" className="mb-1 text-gray-700 font-semibold">
@@ -278,13 +307,11 @@ const CreateCarBuy = () => {
                 onChange={(e) => handleImageChange(e.target.files, setFieldValue)}
                 className="hidden"
               />
-              <p className="text-gray-600 mt-2">
+                            <p className="text-gray-600 mt-2">
                 {imagesPreview.length > 0
                   ? `${imagesPreview.length} Datei(en) ausgewählt`
                   : "Keine Datei ausgewählt"}
               </p>
-
-              {/* Bildvorschau */}
               <div className="mt-4 grid grid-cols-2 md:grid-cols-4 gap-4">
                 {imagesPreview.map((src, index) => (
                   <div key={index} className="relative">
@@ -309,6 +336,7 @@ const CreateCarBuy = () => {
               <Field type="checkbox" name="carAirConditioning" />
               <label>Klimaanlage</label>
             </div>
+
             <div className="flex items-center gap-2">
               <Field type="checkbox" name="damagedCar" />
               <label>unbeschädigt</label>
@@ -334,7 +362,7 @@ const CreateCarBuy = () => {
                 type="submit"
                 className="bg-green-500 hover:bg-green-600 text-white px-6 py-2 rounded-md w-full"
               >
-                Fahrzeug speichern
+                Fahrzeug aktualisieren
               </button>
             </div>
           </Form>
@@ -344,4 +372,5 @@ const CreateCarBuy = () => {
   );
 };
 
-export default CreateCarBuy;
+export default UpdateCarBuy;
+
