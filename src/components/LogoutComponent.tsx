@@ -13,7 +13,7 @@ const LogoutComponent = () => {
     try {
       await dispatch(userLogoutApi()).unwrap();
       NotificationService.success("Erfolgreich abgemeldet!");
-      navigate("/home");
+      navigate("/login");
     } catch (error) {
       NotificationService.error("Abmeldung fehlgeschlagen. Bitte versuchen Sie es erneut.");
     }

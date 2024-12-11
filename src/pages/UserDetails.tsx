@@ -54,7 +54,7 @@ const UserDetails = () => {
             email: user.email,
           }}
           validationSchema={validationSchema}
-          onSubmit={(values) => {
+          onSubmit={() => {
             setIsEditing(false);
             alert("Benutzerinformationen erfolgreich aktualisiert.");
           }}
