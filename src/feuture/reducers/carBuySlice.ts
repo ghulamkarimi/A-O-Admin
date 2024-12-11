@@ -1,7 +1,7 @@
-import { createAsyncThunk, createEntityAdapter, createSlice, EntityState} from "@reduxjs/toolkit";
-import { ICarBuy, TBuy } from "../../interface";
-import { AppDispatch, RootState } from "../store/index";
-import { getCarBuys, socket } from '../../service/index';
+import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
+import { ICarBuy} from "../../interface";
+import {  RootState } from "../store/index";
+import { createBuyCar, getCarBuys } from '../../service/index';
 
 interface carBuyState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -30,19 +30,26 @@ export const fetchCarBuys = createAsyncThunk("carBuys/fetchCarBuys", async () =>
     }
 })
 
+export const createCarBuyApi = createAsyncThunk("carBuy/createCarBuyApi", async (formData: FormData, { rejectWithValue }) => {
+    try {
+        const response = await createBuyCar(formData);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error?.response?.data?.message || "Error creating carBuy");
+    }
+})
 
+ 
 
 const carBuySlice = createSlice({
     name: 'carBuy',
     initialState,
     reducers: {
-        carBuyCreated: carBuyAdapter.addOne,
-        carBuyUpdated: carBuyAdapter.updateOne,
-        carBuyDeleted: carBuyAdapter.removeOne,
+       
     },
     extraReducers: (builder) => {
         builder
-            .addCase(fetchCarBuys.pending, (state, action) => {
+            .addCase(fetchCarBuys.pending, (state) => {
                 state.status = 'loading';
             })
             .addCase(fetchCarBuys.fulfilled, (state, action) => {
@@ -53,27 +60,18 @@ const carBuySlice = createSlice({
             .addCase(fetchCarBuys.rejected, (state, action) => {
                 state.status = 'failed';
                 state.error = action.error.message as string || "Error fetching carBuys";
-
             })
-           
+            .addCase(createCarBuyApi.fulfilled,(state,action)=> {
+                carBuyAdapter.addOne(state, action.payload);
+                state.status = 'succeeded';
+            })
+          
+
     }
 })
 
-export const { carBuyCreated, carBuyUpdated, carBuyDeleted } = carBuySlice.actions;
+
 export const { selectAll: displayCarBuys, selectById: displayCarBuyById } = carBuyAdapter.getSelectors<RootState>((state) => state.carBuys);
 export default carBuySlice.reducer;
 
-// WebSocket-Ereignisse abonnieren und Aktionen dispatchen
-export const subscribeToSocketEvents = (dispatch: AppDispatch) => {
-    socket.on('carBuyCreated', (newCarBuy: ICarBuy) => {
-        dispatch(carBuyCreated(newCarBuy));
-    });
 
-    socket.on('carBuyUpdated', (updatedCarBuy: ICarBuy) => {
-        dispatch(carBuyUpdated({ id: updatedCarBuy._id, changes: updatedCarBuy }));
-    });
-
-    socket.on('carBuyDeleted', (deletedCarBuyId: string) => {
-        dispatch(carBuyDeleted(deletedCarBuyId));
-    });
-}

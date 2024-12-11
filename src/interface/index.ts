@@ -68,6 +68,7 @@ export interface  IAppointment {
     tsn: string;
     isBookedOrBlocked: boolean;
     appointmentId: string;  
+    userId?: string;
 }
 
 export type TAppointment = Partial<IAppointment>;
@@ -77,10 +78,10 @@ export interface ICarBuy {
     carTitle: string;
     carId: string;
     carPrice: string;
-    owner: number;
+    owner: string;
     isSold: boolean;
     carFirstRegistrationDay: string;
-    carImages:string[];
+    carImages: string[] | File[];
     carDescription: string;
     carKilometers: string;
     carColor: string;
@@ -95,7 +96,7 @@ export interface ICarBuy {
     carHorsePower: string;
     carEuroNorm: string;
     fuelType: string;
-    carTechnicalInspection: Date;
+    carTechnicalInspection: string;
     carCategory: string;
     userId: string;
     createdAt: string;

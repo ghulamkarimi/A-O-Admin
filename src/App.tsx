@@ -6,16 +6,20 @@ import OfferList from "./pages/OfferList ";
 import UserList from "./pages/UserList ";
 import CarRent from "./pages/CarRent";
 import CarBuy from "./pages/CarBuy";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "./feuture/store";
-import { useEffect } from "react";
-import { subscribeToSocketEvents } from "./feuture/reducers/offerSlice";
-import { socket } from "./service";
 import Login from "./pages/Login";
 import ProtectedRoute from "./components/ProtectedRouteProps "; 
 import PasswordResetPage from "./pages/PasswordResetPage";
 import LogoutComponent from "./components/LogoutComponent";
 import Appointment from "./pages/Appointment";
+import UserDetails from "./pages/UserDetails";
+import CreateCarBuy from "./pages/CreateCarBuy";
+import { useEffect } from "react";
+import { subscribeToSocketEvents } from "./feuture/reducers/offerSlice";
+import { socket } from "./service";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "./feuture/store";
+
+
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -31,6 +35,7 @@ const App = () => {
       socket.off("offerCreated");
       socket.off("offerUpdated");
       socket.off("offerDeleted");
+      socket.disconnect();
     };
   }, [dispatch]);
 
@@ -50,7 +55,9 @@ const App = () => {
   <Route path="/offers" element={<ProtectedRoute><OfferList /></ProtectedRoute>} />
   <Route path="/appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
   <Route path="/users" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
+  <Route path="/user-details/:userId" element={<ProtectedRoute><UserDetails  /></ProtectedRoute>} />
   <Route path="/carBuy" element={<ProtectedRoute><CarBuy /></ProtectedRoute>} />
+  <Route path="/create-car" element={<ProtectedRoute><CreateCarBuy /></ProtectedRoute>} />
   <Route path="/carRent" element={<ProtectedRoute><CarRent /></ProtectedRoute>} />
    <Route path="/forgetPassword" element={<PasswordResetPage />} />
    <Route path="/logout" element={<LogoutComponent />} />

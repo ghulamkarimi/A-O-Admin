@@ -2,12 +2,14 @@ import { useSelector } from "react-redux";
 import { displayCarBuys } from "../feuture/reducers/carBuySlice";
 import FormattedDate from "../components/FormatesDate";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const CarBuy = () => {
   const carBuys = useSelector(displayCarBuys);
   const [searchTerm, setSearchTerm] = useState("");
+  const navigate = useNavigate();
 
-  // Filterfunktion
+  // Filterfunktion für Suche
   const filteredCars = carBuys.filter((car) => {
     const formattedPrice = car.carPrice.toString();
     const formattedDate = new Date(car.carFirstRegistrationDay)
@@ -17,7 +19,7 @@ const CarBuy = () => {
     return (
       car.carTitle.toLowerCase().includes(searchTerm.toLowerCase()) ||
       formattedPrice.includes(searchTerm) ||
-      formattedDate.includes(searchTerm) || 
+      formattedDate.includes(searchTerm) ||
       car.carIdentificationNumber.toLowerCase().includes(searchTerm.toLowerCase())
     );
   });
@@ -28,7 +30,7 @@ const CarBuy = () => {
       <p className="mb-6 text-lg text-gray-600">Hier sind alle Fahrzeuge aufgelistet.</p>
 
       {/* Suchfeld */}
-      <div className="mb-6">
+      <div className="mb-6 flex flex-col lg:flex-row items-center gap-4">
         <input
           type="text"
           className="border border-gray-300 rounded-md px-4 py-2 w-full lg:w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
@@ -36,6 +38,12 @@ const CarBuy = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
+        <button
+          onClick={() => navigate("/create-car")}
+          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold px-4 py-2 rounded-md"
+        >
+          Neues Fahrzeug erstellen
+        </button>
       </div>
 
       {/* Fahrzeugtabelle */}
@@ -50,10 +58,9 @@ const CarBuy = () => {
                 Titel
               </th>
               <th className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 text-left">
-                KFZ-ID 
+                KFZ-ID
               </th>
-            
-              <th className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 text-left hidden lg:table-cell ">
+              <th className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 text-left hidden lg:table-cell">
                 Bild
               </th>
               <th className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 text-left">
@@ -72,9 +79,8 @@ const CarBuy = () => {
               filteredCars.map((car, index) => (
                 <tr
                   key={car._id}
-                  className={`hover:bg-gray-50 ${
-                    index % 2 === 0 ? "bg-white" : "bg-gray-50"
-                  }`}
+                  className={`hover:bg-gray-50 ${index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                    }`}
                 >
                   <td className="py-3 px-2 border-b border-gray-300 text-sm text-gray-700 text-center">
                     {index + 1}
@@ -85,11 +91,10 @@ const CarBuy = () => {
                   <td className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700">
                     {car?.carIdentificationNumber}
                   </td>
-               
-                  <td className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 hidden lg:table-cell ">
+                  <td className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 hidden lg:table-cell">
                     <img
                       className="w-14 h-14 rounded-sm object-cover"
-                      src={car.carImages[0]}
+                      src={typeof car.carImages[0] === 'string' ? car.carImages[0] : URL.createObjectURL(car.carImages[0])}
                       alt={car.carTitle}
                     />
                   </td>
@@ -97,8 +102,6 @@ const CarBuy = () => {
                     {new Intl.NumberFormat("de-DE", {
                       style: "currency",
                       currency: "EUR",
-                      minimumFractionDigits: 0,
-                      maximumFractionDigits: 0,
                     }).format(Number(car.carPrice))}
                   </td>
                   <td className="py-3 px-4 border-b border-gray-300 text-sm text-gray-700 hidden lg:table-cell">

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IChangePassword, TAppointment, TOffer, TUser } from '../interface/index';
+import { IChangePassword, TAppointment, TUser } from '../interface/index';
 import { Socket, io } from 'socket.io-client';
 import axiosJWT from './axiosJwt';
 
@@ -7,7 +7,7 @@ import axiosJWT from './axiosJwt';
 const API_URL = "http://localhost:7001";
 
 export const socket: Socket = io(API_URL, {
-    autoConnect: false, // Automatisches Verbinden vermeiden, bis es explizit verlangt wird
+    autoConnect: false, 
 });
 
 
@@ -117,3 +117,10 @@ export const getCarBuys = () => {
     const url = `${API_URL}/buy/allBuys`;
     return axios.get(url);
 }
+
+export const createBuyCar = async (FormData: FormData)=> {
+    const url = `${API_URL}/buy/create`;
+    return axios.post(url, FormData, { withCredentials: true });
+}
+
+ 

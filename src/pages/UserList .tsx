@@ -15,11 +15,7 @@ const UserList = () => {
     user.customerNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
     user.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
-  const handleUserClick = (user: { _id: string }) => {
-    navigate(`/user/${user._id}`);
-  };
-
+ 
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-4">Benutzerverwaltung</h1>
@@ -65,7 +61,7 @@ const UserList = () => {
                 <tr
                   key={user._id}
                   className="hover:bg-gray-100 cursor-pointer"
-                  onClick={() => handleUserClick(user)}
+                  onClick={() => navigate(`/user-details/${user._id}`)} 
                 >
                   <td className="py-2 px-4 border-b border-gray-200 text-sm text-gray-700">
                     {user.customerNumber}

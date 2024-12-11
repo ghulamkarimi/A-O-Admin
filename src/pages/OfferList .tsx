@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../feuture/store";
 import { Formik } from "formik";
@@ -17,21 +17,22 @@ import { socket } from "../service";
 import { IOffer } from "../interface";
 
 const OfferList = () => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const dispatch = useDispatch<AppDispatch>();
     const offers = useSelector(displayOffers);
     const userId = localStorage.getItem("userId") || "";
     useEffect(() => {
         console.log("Offers:", offers); // Debugging
     }, [offers]);
-    
+
 
     const [editingOfferId, setEditingOfferId] = useState<string | null>(null);
     const [editValues, setEditValues] = useState<{
         title: string;
         description: string;
         oldPrice: number;
-        userId:string;
-        offerId:string;
+        userId: string;
+        offerId: string;
         newPrice: number;
         imageUrl: File | null;
     }>({
@@ -39,8 +40,8 @@ const OfferList = () => {
         description: "",
         oldPrice: 0,
         newPrice: 0,
-        userId:"",
-        offerId:"",
+        userId: "",
+        offerId: "",
         imageUrl: null,
     });
 
@@ -106,7 +107,7 @@ const OfferList = () => {
         }
     };
 
-    const startEditing = (offer:IOffer) => {
+    const startEditing = (offer: IOffer) => {
         console.log("Start Editing Offer:", offer); // Debugging
         setEditingOfferId(offer._id);
         setEditValues({
@@ -131,33 +132,33 @@ const OfferList = () => {
     const handleEditOffer = async (offerId: string) => {
         console.log("Editing offer with ID:", offerId);
         console.log("Edit Values Before API Call:", editValues);
-        
+
         try {
             if (!userId) {
                 throw new Error("Benutzer-ID fehlt.");
             }
-    
+
             if (!offerId) {
                 throw new Error("Angebots-ID fehlt.");
             }
-    
+
             const formData = new FormData();
             formData.append("title", editValues.title);
             formData.append("description", editValues.description);
             formData.append("oldPrice", editValues.oldPrice.toString());
             formData.append("newPrice", editValues.newPrice.toString());
             formData.append("userId", editValues.userId); // Sicherstellen, dass userId gesetzt ist
-            formData.append("offerId",editValues.offerId); // Sicherstellen, dass offerId gesetzt ist
-    
+            formData.append("offerId", editValues.offerId); // Sicherstellen, dass offerId gesetzt ist
+
             if (editValues.imageUrl) {
                 formData.append("offerImage", editValues.imageUrl); // Feldname muss "offerImage" sein
             }
             console.log("Image File:", editValues.imageUrl);
 
-    
-            const response = await dispatch(editOfferApi({ 
-                offer: { 
-                    _id: offerId, 
+
+            const response = await dispatch(editOfferApi({
+                offer: {
+                    _id: offerId,
                     userId: editValues.userId,
                     offerId: editValues.offerId,
                     title: editValues.title,
@@ -167,19 +168,16 @@ const OfferList = () => {
                 },
                 imageFile: editValues.imageUrl || undefined
             })).unwrap();
-    
+
             NotificationService.success(response.message || "Angebot erfolgreich bearbeitet!");
-            console.log("rsponse nach der anfrage zur backend :",response)
+            console.log("rsponse nach der anfrage zur backend :", response)
             setEditingOfferId(null); // Bearbeitungsmodus verlassen
         } catch (error: any) {
             NotificationService.error(error.message || "Fehler beim Bearbeiten des Angebots.");
-            console.log("error beim bearbeiten des angebots",error)
+            console.log("error beim bearbeiten des angebots", error)
         }
     };
-    
 
-   
-    
     const cancelEditing = () => {
         setEditingOfferId(null);
         setEditValues({
@@ -187,8 +185,8 @@ const OfferList = () => {
             description: "",
             oldPrice: 0,
             newPrice: 0,
-            userId:"",
-            offerId:"",
+            userId: "",
+            offerId: "",
             imageUrl: null,
         });
     };
@@ -337,16 +335,17 @@ const OfferList = () => {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {offers.length > 0 ? (
                     offers.map((offer) => (
-                        
+
                         <div
                             key={offer._id}
                             className="bg-white shadow-md rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-shadow"
                         >
                             {editingOfferId === offer._id ? (
                                 <form
-                                encType="multipart/form-data"
-                                    onSubmit={(e) => {
-                                        e.preventDefault();
+                                    encType="multipart/form-data"
+                                    onSubmit={() => {
+                                        setIsSubmitting(true);
+                                        handleEditOffer(offer._id).finally(() => setIsSubmitting(false));
                                         handleEditOffer(offer._id);
                                     }}
                                     className="space-y-4"
@@ -394,9 +393,14 @@ const OfferList = () => {
                                         >
                                             Abbrechen
                                         </button>
-                                        <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">
-                                            Speichern
+                                        <button
+                                            type="submit"
+                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-all"
+                                            disabled={isSubmitting}
+                                        >
+                                            {isSubmitting ? "Erstelle..." : "Angebot erstellen"}
                                         </button>
+
                                     </div>
                                 </form>
                             ) : (
@@ -408,7 +412,7 @@ const OfferList = () => {
                                         </span>
                                     </div>
                                     <img
-                                        className="w-full h-40 object-cover rounded-md mb-4"
+                                        className="w-full h-60 object-cover rounded-md mb-4"
                                         src={offer.imageUrl}
                                         alt={offer.title}
                                     />
