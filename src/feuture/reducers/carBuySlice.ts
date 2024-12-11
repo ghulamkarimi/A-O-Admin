@@ -85,11 +85,12 @@ const carBuySlice = createSlice({
                 carBuyAdapter.addOne(state, action.payload);
                 state.status = 'succeeded';
             })
-            .addCase(updateCarBuyApi.fulfilled, (state, action) => {
-                carBuyAdapter.updateOne(state, action.payload);
-                state.status = 'succeeded';
-            })
-
+            builder.addCase(deleteCarBuyApi.fulfilled, (state, action) => {
+                const carId = action.meta.arg.carBuyId
+                carBuyAdapter.removeOne(state, carId);
+                state.status = "succeeded";
+            });
+            
 
 
     }

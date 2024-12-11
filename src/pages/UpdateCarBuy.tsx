@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Formik, Field, Form, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { updateCarBuyApi, displayCarBuyById, deleteCarBuyApi } from "../feuture/reducers/carBuySlice";
+import { updateCarBuyApi, displayCarBuyById, deleteCarBuyApi, fetchCarBuys } from "../feuture/reducers/carBuySlice";
 import { NotificationService } from "../service/NotificationService";
 import { useNavigate, useParams } from "react-router-dom";
 import { RootState, AppDispatch } from "../feuture/store";
@@ -131,6 +131,7 @@ const UpdateCarBuy = () => {
       }
       const response = await dispatch(deleteCarBuyApi({ userId: userId, carBuyId: id! })).unwrap();
       NotificationService.success(response.message || "Fahrzeug erfolgreich gelöscht!");
+      await dispatch(fetchCarBuys());
       navigate("/carBuy");
     } catch (error: any) {
       NotificationService.error(error.message || "Fehler beim Löschen des Fahrzeugs.");
