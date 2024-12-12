@@ -25,7 +25,7 @@ const UserDetails = () => {
   console.log(workshopAppointments);
 
   // Filtere Mietwagenbuchungen (Platzhalter, wenn es später hinzugefügt wird)
-   
+
 
   const validationSchema = Yup.object().shape({
     firstName: Yup.string().required("Vorname ist erforderlich"),
@@ -185,6 +185,10 @@ const UserDetails = () => {
                 <p>
                   <strong>Service:</strong> {appointment.service || "N/A"}
                 </p>
+                <p>
+                  <strong>
+                    Kennzeichen:  </strong>{appointment.licensePlate || "N/A"}
+                </p>
               </li>
             ))}
           </ul>
@@ -196,7 +200,7 @@ const UserDetails = () => {
       {/* Mietwagenbuchungen */}
       <div className="mt-8">
         <h2 className="text-2xl font-bold mb-4">Mietwagenbuchungen</h2>
-          <p className="text-gray-500">Keine Mietwagenbuchungen vorhanden.</p>
+        <p className="text-gray-500">Keine Mietwagenbuchungen vorhanden.</p>
       </div>
     </div>
   );
