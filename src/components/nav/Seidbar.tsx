@@ -17,7 +17,7 @@ const CustomSidebar = () => {
                 <ul className="space-y-2">
                     <li>
                         <Link
-                            to="/"
+                            to="/home"
                             className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/" ? "bg-gray-700" : ""
                                 }`}
                         >
@@ -59,7 +59,7 @@ const CustomSidebar = () => {
                             className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/cars" ? "bg-gray-700" : ""
                                 }`}
                         >
-                            auto vermieten
+                            Autovermietung
                         </Link>
                     </li>
                     <li>
@@ -68,7 +68,7 @@ const CustomSidebar = () => {
                             className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/cars" ? "bg-gray-700" : ""
                                 }`}
                         >
-                            auto verkaufen
+                            Auto An- & Verkaufen
                         </Link>
                     </li>
 

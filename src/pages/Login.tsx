@@ -39,7 +39,7 @@ const Login = () => {
         const response = await dispatch(userLoginApi(values)).unwrap();
         NotificationService.success(response.message || "Login erfolgreich!");
         setTimeout(() => {
-          navigate("/");
+          navigate("/home");
         }, 2000);
         dispatch(setUserInfo(response.userInfo));
       } catch (error: any) {

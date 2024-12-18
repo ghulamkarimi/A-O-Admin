@@ -21,7 +21,7 @@ const ResponsiveNavbar = () => {
                 <nav className="mt-4">
                     <ul className="space-y-4">
                         <li>
-                            <Link to="/" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
+                            <Link to="/home" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
                                 Home
                             </Link>
                         </li>

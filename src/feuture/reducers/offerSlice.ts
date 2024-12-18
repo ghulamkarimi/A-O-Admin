@@ -1,8 +1,17 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
 import { IOffer, TOffer } from "../../interface";
 import { RootState, AppDispatch } from "../store/index";
-import { getOffers, createOffer as createOfferService, deleteOffer, editOffer } from "../../service";
-import { socket } from "../../service"; 
+import { getOffers, createOffer as createOfferService, deleteOffer, editOffer, API_URL } from "../../service";
+
+
+
+
+import { io, Socket } from "socket.io-client";
+ 
+
+export const socket: Socket = io(API_URL, {
+    autoConnect: false,
+  });
 
 interface OfferState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed';

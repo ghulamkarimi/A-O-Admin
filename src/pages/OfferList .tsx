@@ -11,9 +11,9 @@ import {
     createOffer,
     deleteOfferApi,
     editOfferApi,
+    socket,
 } from "../feuture/reducers/offerSlice";
 import { NotificationService } from "../service/NotificationService";
-import { socket } from "../service";
 import { IOffer } from "../interface";
 
 const OfferList = () => {

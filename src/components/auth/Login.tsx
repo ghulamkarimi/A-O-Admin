@@ -172,7 +172,7 @@ const Login = () => {
             <span className="text-white text-lg">Oder</span>
           </div>
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/offers")}
             className="flex items-center justify-center space-x-2 px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all"
           >
             <IoReturnDownBack className="text-xl" />

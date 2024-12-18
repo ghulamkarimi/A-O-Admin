@@ -1,14 +1,11 @@
 import axios from 'axios';
 import { IChangePassword, TAppointment, TUser } from '../interface/index';
-import { Socket, io } from 'socket.io-client';
+
 import axiosJWT from './axiosJwt';
 
 
-const API_URL = "http://localhost:7001";
+export const API_URL = "http://localhost:7001";
 
-export const socket: Socket = io(API_URL, {
-    autoConnect: false, 
-});
 
 
 // user

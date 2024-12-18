@@ -13,46 +13,23 @@ import LogoutComponent from "./components/LogoutComponent";
 import Appointment from "./pages/Appointment";
 import UserDetails from "./pages/UserDetails";
 import CreateCarBuy from "./pages/CreateCarBuy";
-import { useEffect } from "react";
-import { subscribeToSocketEvents } from "./feuture/reducers/offerSlice";
-import { socket } from "./service";
-import { useDispatch } from "react-redux";
-import { AppDispatch } from "./feuture/store";
 import UpdateCarBuy from "./pages/UpdateCarBuy";
 
 
 
 const App = () => {
-  const dispatch = useDispatch<AppDispatch>();
 
-  useEffect(() => {
-    if (!socket.connected) {
-      socket.connect(); // Sichere Verbindung
-    }
 
-    subscribeToSocketEvents(dispatch);
-
-    return () => {
-      socket.off("offerCreated");
-      socket.off("offerUpdated");
-      socket.off("offerDeleted");
-      socket.disconnect();
-    };
-  }, [dispatch]);
+  
 
   return (
     <Router>
       <div className="flex">
-        {/* Sidebar für größere Bildschirme */}
         <CustomSidebar />
-
-        {/* Navbar für mobile Bildschirme */}
         <ResponsiveNavbar />
-
-        {/* Main Content */}
         <div className="flex-1 md:ml-52 p-8 mt-16 md:mt-0">
 <Routes>
-  <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
+  <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
   <Route path="/offers" element={<ProtectedRoute><OfferList /></ProtectedRoute>} />
   <Route path="/appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />
   <Route path="/users" element={<ProtectedRoute><UserList /></ProtectedRoute>} />
