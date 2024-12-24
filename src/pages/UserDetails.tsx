@@ -1,39 +1,48 @@
-import { useState } from "react";
 import { useParams } from "react-router-dom";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { displayUsers } from "../feuture/reducers/userSlice";
 import { displayAppointments } from "../feuture/reducers/appointmentSlice";
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
+import { AllReservation, getReservationApi, updateStatusReservationApi } from "../feuture/reducers/resevationSlice";
+import FormattedDate from "../components/FormatesDate";
+import { NotificationService } from "../service/NotificationService";
+import { AppDispatch } from "../feuture/store";
+import { useEffect, useState } from "react";
+
 
 const UserDetails = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { userId } = useParams(); // Extrahiere Benutzer-ID aus der URL
   const users = useSelector(displayUsers);
   const appointments = useSelector(displayAppointments);
-  const [isEditing, setIsEditing] = useState(false);
+  const userReservations = useSelector(AllReservation);
 
+  const [loading, setLoading] = useState(true);
+  const [filteredReservations, setFilteredReservations] = useState<any[]>([]);
+
+
+  useEffect(() => {
+    const rentalAppointment = userReservations.filter(
+      (reservation) => reservation.user?._id?.toString() === userId?.toString()
+    );
+
+    setFilteredReservations(rentalAppointment);
+    setLoading(false);
+  }, [userReservations, userId]);
+
+ 
   const user = users.find((u) => u._id === userId); // Finde den Benutzer anhand der ID
   if (!user) {
     return <div>Benutzer nicht gefunden</div>;
   }
   console.log(user);
 
-  // Filtere Werkstattbuchungen
   const workshopAppointments = appointments.filter(
     (appointment) => appointment.userId?.toString() === userId?.toString()
   );
-  console.log(workshopAppointments);
 
-  // Filtere Mietwagenbuchungen (Platzhalter, wenn es später hinzugefügt wird)
-
-
-  const validationSchema = Yup.object().shape({
-    firstName: Yup.string().required("Vorname ist erforderlich"),
-    lastName: Yup.string().required("Nachname ist erforderlich"),
-    email: Yup.string()
-      .email("Ungültige E-Mail-Adresse")
-      .required("E-Mail ist erforderlich"),
-  });
+  const rentalAppointment = userReservations.filter(
+    (reservation) => reservation.user?._id?.toString() === userId?.toString()
+  );
 
   const handleDelete = () => {
     if (window.confirm("Möchten Sie diesen Benutzer wirklich löschen?")) {
@@ -41,132 +50,70 @@ const UserDetails = () => {
     }
   };
 
+  const handleStatusChange = async (e: React.ChangeEvent<HTMLSelectElement>, reservationId: string) => {
+    const newStatus = e.target.value;
+
+    const isConfirmed = window.confirm("Sind Sie sicher, dass Sie den Zahlungsstatus ändern möchten?");
+    if (!isConfirmed) return;
+
+    try {
+      const response = await dispatch(
+        updateStatusReservationApi({ _id: reservationId, paymentStatus: newStatus })
+      ).unwrap();
+
+      if (response) {
+        NotificationService.success("Zahlungsstatus erfolgreich aktualisiert.");
+      }
+    } catch (error) {
+      NotificationService.error("Fehler beim Aktualisieren des Zahlungsstatus.");
+    }
+  };
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      await dispatch(getReservationApi());
+      const rentalAppointment = userReservations.filter(
+        (reservation) => reservation.user?._id?.toString() === userId?.toString()
+      );
+      setFilteredReservations(rentalAppointment);
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [dispatch, userReservations, userId]);
+
   return (
     <div className="p-6">
       <h1 className="text-3xl font-bold mb-6 text-center">Benutzerdetails</h1>
 
-      {isEditing ? (
-        <Formik
-          initialValues={{
-            customerNumber: user.customerNumber,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            email: user.email,
-          }}
-          validationSchema={validationSchema}
-          onSubmit={() => {
-            setIsEditing(false);
-            alert("Benutzerinformationen erfolgreich aktualisiert.");
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form className="bg-white p-6 shadow-md rounded-md">
-              <div className="mb-4">
-                <label className="block text-gray-700">Kundennummer</label>
-                <Field
-                  type="text"
-                  name="customerNumber"
-                  className="w-full p-2 border rounded-md"
-                />
-                <ErrorMessage
-                  name="customerNumber"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Vorname</label>
-                <Field
-                  type="text"
-                  name="firstName"
-                  className="w-full p-2 border rounded-md"
-                />
-                <ErrorMessage
-                  name="firstName"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">Nachname</label>
-                <Field
-                  type="text"
-                  name="lastName"
-                  className="w-full p-2 border rounded-md"
-                />
-                <ErrorMessage
-                  name="lastName"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-gray-700">E-Mail</label>
-                <Field
-                  type="email"
-                  name="email"
-                  className="w-full p-2 border rounded-md"
-                />
-                <ErrorMessage
-                  name="email"
-                  component="div"
-                  className="text-red-500 text-sm"
-                />
-              </div>
-              <div className="flex justify-between">
-                <button
-                  type="button"
-                  className="bg-gray-500 text-white px-4 py-2 rounded-md"
-                  onClick={() => setIsEditing(false)}
-                >
-                  Abbrechen
-                </button>
-                <button
-                  type="submit"
-                  className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Speichern..." : "Speichern"}
-                </button>
-              </div>
-            </Form>
-          )}
-        </Formik>
-      ) : (
-        <div className="bg-white p-6 shadow-md rounded-md">
-          <p className="mb-4">
-            <strong>Kundennummer:</strong> {user.customerNumber}
-          </p>
-          <p className="mb-4">
-            <strong>Vorname:</strong> {user.firstName}
-          </p>
-          <p className="mb-4">
-            <strong>Nachname:</strong> {user.lastName}
-          </p>
-          <p className="mb-4">
-            <strong>E-Mail:</strong> {user.email}
-          </p>
-          <img
-            src={user.profile_photo || "https://via.placeholder.com/150"}
-            alt="Profilbild"
-            className="mt-4 w-32 h-32 rounded-full object-cover"
-          />
-          <div className="flex justify-between mt-6">
-            <button
-              className="bg-yellow-500 text-white px-4 py-2 rounded-md"
-              onClick={() => setIsEditing(true)}
-            >
-              Bearbeiten
-            </button>
-            <button
-              className="bg-red-500 text-white px-4 py-2 rounded-md"
-              onClick={handleDelete}
-            >
-              Löschen
-            </button>
-          </div>
+      <div className="bg-white p-6 shadow-md rounded-md">
+        <p className="mb-4">
+          <strong>Kundennummer:</strong> {user.customerNumber}
+        </p>
+        <p className="mb-4">
+          <strong>Vorname:</strong> {user.firstName}
+        </p>
+        <p className="mb-4">
+          <strong>Nachname:</strong> {user.lastName}
+        </p>
+        <p className="mb-4">
+          <strong>E-Mail:</strong> {user.email}
+        </p>
+        <img
+          src={user.profile_photo || "https://via.placeholder.com/150"}
+          alt="Profilbild"
+          className="mt-4 w-32 h-32 rounded-full object-cover"
+        />
+        <div className="flex justify-end mt-6">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded-md"
+            onClick={handleDelete}
+          >
+            Löschen
+          </button>
         </div>
-      )}
+      </div>
 
       {/* Werkstattbuchungen */}
       <div className="mt-8">
@@ -186,8 +133,8 @@ const UserDetails = () => {
                   <strong>Service:</strong> {appointment.service || "N/A"}
                 </p>
                 <p>
-                  <strong>
-                    Kennzeichen:  </strong>{appointment.licensePlate || "N/A"}
+                  <strong>Kennzeichen:</strong>{" "}
+                  {appointment.licensePlate || "N/A"}
                 </p>
               </li>
             ))}
@@ -198,9 +145,94 @@ const UserDetails = () => {
       </div>
 
       {/* Mietwagenbuchungen */}
-      <div className="mt-8">
-        <h2 className="text-2xl font-bold mb-4">Mietwagenbuchungen</h2>
-        <p className="text-gray-500">Keine Mietwagenbuchungen vorhanden.</p>
+      <div className="mt-12">
+        <h2 className="text-3xl font-bold mb-8 text-orange-600 text-center">
+          Mietwagenbuchungen
+        </h2>
+
+        {
+          loading ? (
+            <p className="text-center text-gray-500 text-xl">Lade Mietwagenbuchungen...</p>
+          ) : 
+          filteredReservations.length > 0 ? (
+            <div className="max-w-2xl mx-auto space-y-10">
+              {filteredReservations.map((reservation) => (
+                <div
+                  key={reservation._id}
+                  className="border border-gray-200 rounded-lg shadow-lg overflow-hidden bg-white  "
+                >
+                  <img
+                    className="w-full h-72 object-cover"
+                    src={reservation.carRent.carImage}
+                    alt={reservation.carRent.carName}
+                  />
+                  <div className="p-6 space-y-6">
+                    <h3 className="text-3xl font-semibold text-gray-900">
+                      {reservation.carRent.carName}
+                    </h3>
+
+                    <div className="text-lg space-y-4">
+                      <p>
+                        <strong>Abholzeit:</strong>{" "}
+                        <span className="text-gray-700">{reservation.pickupTime}</span>
+                      </p>
+                      <p>
+                        <strong>Abholdatum:</strong>{" "}
+                        <span className="text-gray-700">
+                          <FormattedDate date={reservation.pickupDate || ""} />
+                        </span>
+                      </p>
+                      <p>
+                        <strong>Rückgabedatum:</strong>{" "}
+                        <span className="text-gray-700">
+                          <FormattedDate date={reservation.returnDate || ""} />
+                        </span>
+                      </p>
+                      <p>
+                        <strong>Rückgabezeit:</strong>{" "}
+                        <span className="text-gray-700">{reservation.returnTime}</span>
+                      </p>
+                      <div>
+                        <strong>Zahlungsstatus:</strong>{" "}
+
+                        <select
+                          className="ml-4 px-2 py-1 rounded-md border"
+                          value={reservation.paymentStatus}
+                          onChange={(e) => handleStatusChange(e, reservation._id)}
+                        >
+                          <option value="pending">Ausstehend</option>
+                          <option value="completed">Abgeschlossen</option>
+                        </select>
+                      </div>
+                      <p>
+                        <strong>Fahrer:</strong>{" "}
+                        <span className="text-gray-700">
+                          {reservation.vorname} {reservation.nachname}
+                        </span>
+                      </p>
+                      <p>
+                        <strong>Telefon:</strong>{" "}
+                        <span className="text-gray-700">
+                          {reservation.telefonnummer}
+                        </span>
+                      </p>
+                      <p>
+                        <strong>Geburtsdatum:</strong>{" "}
+                        <span className="text-gray-700">
+                          <FormattedDate date={reservation.geburtsdatum || ""} />
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-gray-500 text-xl">
+              Keine Mietwagenbuchungen vorhanden.
+            </p>
+          )
+        }
       </div>
     </div>
   );

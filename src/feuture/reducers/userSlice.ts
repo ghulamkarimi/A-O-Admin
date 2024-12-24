@@ -3,10 +3,13 @@ import {
     createEntityAdapter,
     createSlice,
     EntityState,
+    PayloadAction,
 } from "@reduxjs/toolkit";
-import { userLogin, userRegister, getAllUsers, confirmEmailVerificationCode, requestPasswordReset, changePasswordWithEmail, userLogout} from '../../service/index';
-import { RootState } from "../store/index";
-import { IChangePassword, IUser, IUserInfo, TUser } from "../../interface";
+import { userLogin, userRegister, getAllUsers, userLogout, requestPasswordReset, confirmEmailVerificationCode, checkAccessToken } from '../../service/index';
+import { RootState } from "../store";
+import { IUser, IUserInfo, TUser } from "../../interface";
+import { IChangePassword } from "../../interface";
+import { changePasswordWithEmail } from "../../service/index";
 
 
 
@@ -18,11 +21,15 @@ interface IUserState {
     file: File | null;
     userInfo: IUserInfo;
     message?: string;
+   
 }
 
 const userAdapter = createEntityAdapter<IUser, string>({
     selectId: (user) => (user?._id ? user._id : ""),
 });
+
+
+
 
 
 export const userRegisterApi = createAsyncThunk(
@@ -37,17 +44,22 @@ export const userRegisterApi = createAsyncThunk(
     }
 );
 
+// Removed duplicate checkAccessTokenApi declaration
+
 export const userLoginApi = createAsyncThunk(
     "users/userLoginApi",
-    async (initialUser: TUser, { rejectWithValue }) => {
+    async (initialUser: TUser, ) => {
         try {
-            const response = await userLogin(initialUser);
-            console.log("login UserSlice:", response.data);
-            localStorage.setItem("userId", response.data.userInfo.userId)
-            localStorage.setItem("exp", response.data.userInfo.exp)
+            const response = await userLogin(initialUser)
+            console.log("users/userLoginApi",response.data)
+            localStorage.setItem("userId", response.data.userInfo.userId);
+            localStorage.setItem("exp", response.data.userInfo.exp.toString());
+         
+       
+
             return response.data;
         } catch (error: any) {
-            return rejectWithValue(error?.response?.data?.message || "Error in user login");
+            return (error?.response?.data?.message || "Error in user login");
         }
     }
 );
@@ -58,15 +70,13 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async (_, { rejec
         return response.data;
     } catch (error: any) {
         return rejectWithValue(error?.response?.data?.message || "Error fetching users");
-
     }
 });
 
 export const userLogoutApi = createAsyncThunk("users/userLogoutApi", async (_, { rejectWithValue }) => {
     try {
         const response = await userLogout();
-        localStorage.removeItem("exp");
-        localStorage.removeItem("userId");
+        
         return response.data;
     } catch (error) {
 
@@ -74,6 +84,37 @@ export const userLogoutApi = createAsyncThunk("users/userLogoutApi", async (_, {
         return rejectWithValue(errorMessage);
     }
 });
+
+ 
+export const changePasswordApi = createAsyncThunk(
+    "user/changePassword",
+    async (passwordData: IChangePassword, { rejectWithValue }) => {
+        try {
+            const response = await changePasswordWithEmail(passwordData);
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(error.response.data.message || "Fehler beim Ändern des Passworts");
+        }
+    }
+);
+ 
+
+
+export const checkAccessTokenApi = createAsyncThunk(
+    "/user/checkRefreshTokenApi",
+    async () => {
+      try {
+        const response = await checkAccessToken();
+        localStorage.setItem("userId", response.data.user._id); // Benutzer-ID speichern
+        return response.data;
+      } catch (error: any) {
+        // if (error.response.status === 401 || error.response.status === 404) {
+        //   localStorage.clear(); // Lokalen Speicher löschen bei ungültigem Token
+        // }
+        throw error.response.data.message;
+      }
+    }
+  );
 
 export const requestPasswordResetApi = createAsyncThunk(
     "user/requestPasswordResetApi",
@@ -87,18 +128,6 @@ export const requestPasswordResetApi = createAsyncThunk(
         }
     }
 )
-
-export const changePasswordApi = createAsyncThunk(
-    "user/changePassword",
-    async (passwordData: IChangePassword, { rejectWithValue }) => {
-        try {
-            const response = await changePasswordWithEmail(passwordData);
-            return response.data;
-        } catch (error: any) {
-            return rejectWithValue(error.response.data.message || "Fehler beim Ändern des Passworts");
-        }
-    }
-);
 
 export const confirmEmailVerificationCodeApi = createAsyncThunk(
     "user/confirmEmailVerificationCode",
@@ -117,8 +146,6 @@ export const confirmEmailVerificationCodeApi = createAsyncThunk(
     }
   );
 
- 
-
 const initialState: IUserState & EntityState<IUser, string> =
     userAdapter.getInitialState({
         status: "idle",
@@ -135,6 +162,7 @@ const initialState: IUserState & EntityState<IUser, string> =
             password: "",
             confirmPassword: "",
             isAdmin: false,
+            customerNumber: "",
             exp: 0,
             iat: 0,
         },
@@ -150,11 +178,23 @@ const userSlice = createSlice({
         setUserInfo: (state, action) => {
             state.userInfo = action.payload;
         },
+        setUserId: (state, action) => {
+            state.userId = action.payload;
+        },
         clearUserInfos: (state) => {
             state.userInfo = initialState.userInfo;
             state.token = "";
             state.userId = "";
-        }
+        },
+        // Benutzer aktualisieren
+        userUpdated: (state, action: PayloadAction<{ id: string; updatedUser: IUser }>) => {
+            const { id, updatedUser } = action.payload;
+            userAdapter.updateOne(state, {
+                id,
+                changes: updatedUser,
+            });
+        },
+          
     },
     extraReducers: (builder) => {
         builder
@@ -166,11 +206,12 @@ const userSlice = createSlice({
                 state.status = "succeeded";
             })
             .addCase(userLoginApi.fulfilled, (state, action) => {
-                userAdapter.setOne(state, action.payload.userInfo);
-                state.userInfo = action.payload.userInfo;
-                state.token = action.payload.token;
+                userAdapter.setOne(state, action.payload.user);
                 state.status = "succeeded";
             })
+            .addCase(userLogoutApi.fulfilled, () => {
+                return initialState;
+              })
             .addCase(fetchUsers.fulfilled, (state, action) => {
                 userAdapter.setAll(state, action.payload);
                 state.status = "succeeded";
@@ -179,10 +220,38 @@ const userSlice = createSlice({
                 state.status = "failed";
                 state.error = action.error.message || "Failed to fetch users";
             })
-             
+        
+            .addCase(changePasswordApi.fulfilled, (state) => {
+                state.status = "succeeded";
+                state.error = null;
+            })
+         
+            .addCase(requestPasswordResetApi.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.message = action.payload.message; 
+              })
+              .addCase(checkAccessTokenApi.fulfilled, (state, action) => {
+                userAdapter.setOne(state, action.payload.userInfo);
+
+              })
+              .addCase(checkAccessTokenApi.rejected, (state, action) => {
+                state.status = "failed";
+                state.error = action.error.message || "Token check failed";
+            })
+              .addCase(confirmEmailVerificationCodeApi.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.message = action.payload.message;
+                if (action.payload.user) {
+                  state.userInfo = {
+                    ...state.userInfo,
+                    email: action.payload.user.email,
+                    isAccountVerified: action.payload.user.isAccountVerified,
+                  };
+                }
+              });
     }
 });
-
+export const { userUpdated, clearUserInfos,setUserId } = userSlice.actions;
 export const { selectAll: displayUsers, selectById: displayUserById } = userAdapter.getSelectors((state: RootState) => state.users);
 export const { setToken, setUserInfo } = userSlice.actions;
 

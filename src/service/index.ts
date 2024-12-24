@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { IChangePassword, TAppointment, TUser } from '../interface/index';
+import { IChangePassword, TAppointment, TReservation, TUser } from '../interface/index';
 
 import axiosJWT from './axiosJwt';
 
@@ -14,6 +14,7 @@ export const userRegister = (user: TUser) => {
     return axios.post(url, user);
 }
 
+
 export const getAllUsers = () => {
     const url = `${API_URL}/user/allUsers`;
     return axios.get(url);
@@ -26,8 +27,20 @@ export const userLogin = (user: TUser) => {
 
 export const refreshToken = () => {
     const url = `${API_URL}/user/refreshToken`;
-    return axios.get(url, { withCredentials: true }); 
+    return axios.get(url, { withCredentials: true });
 };
+
+export const checkAccessToken = () => {
+    const url = `${API_URL}/user/check-token`;
+    const token = localStorage.getItem("accessToken");  // Token aus Local Storage holen
+
+    return axios.get(url, {
+        headers: {
+            Authorization: `Bearer ${token}`,  // Token im Header mitsenden
+        }
+    });
+};
+
 
 export const requestPasswordReset = (email: string) => {
     const url = `${API_URL}/user/requestPasswordReset`;
@@ -64,7 +77,7 @@ export const createOffer = async (formData: FormData) => {
 export const deleteOffer = async (userId: string, offerId: string) => {
     const url = `${API_URL}/offer/deleteOffer/`;
     return axios.delete(url, {
-        data: { userId, offerId },  
+        data: { userId, offerId },
     });
 };
 
@@ -78,7 +91,7 @@ export const editOffer = async (formData: FormData) => {
         });
 
         const response = await axios.put(url, formData, { withCredentials: true });
-        return response.data; 
+        return response.data;
     } catch (error) {
         if (axios.isAxiosError(error)) {
             console.error("Axios Error:", error.response?.data);
@@ -115,12 +128,12 @@ export const getCarBuys = () => {
     return axios.get(url);
 }
 
-export const createBuyCar = async (FormData: FormData)=> {
+export const createBuyCar = async (FormData: FormData) => {
     const url = `${API_URL}/buy/create`;
     return axios.post(url, FormData, { withCredentials: true });
 }
 
- export const updateCarBuy = async (FormData: FormData) => {
+export const updateCarBuy = async (FormData: FormData) => {
     const url = `${API_URL}/buy/update`;
     return axios.put(url, FormData, { withCredentials: true });
 }
@@ -134,3 +147,19 @@ export const deleteCarBuy = async (userId: string, carId: string) => {
         },
     });
 };
+
+
+
+export const getReservation = () => {
+    const url = `${API_URL}/reservation/get-reservation`
+    return axios.get(url)
+}
+
+export const updateStatusReservation = (reservation: TReservation) => {
+    const url = `${API_URL}/reservation/update-status/${reservation._id}`;  
+    return axios.put(url, {
+      paymentStatus: reservation.paymentStatus,
+      isBooked: reservation.isBooked,
+    });
+  };
+  

@@ -4,12 +4,12 @@ export interface IOffer {
     description: string;
     oldPrice: number;
     newPrice: number;
-    userId:string;
-    discountPercentage?: number; 
-    imageUrl: string; 
+    userId: string;
+    discountPercentage?: number;
+    imageUrl: string;
     offerId: string;
     createdAt: string;
-    
+
 }
 export type TOffer = Partial<IOffer>;
 
@@ -29,9 +29,9 @@ export interface IUser {
     refreshToken: string | null;
     verificationCode: string;
     isAccountVerified: boolean;
-    createdAt: string; 
-    customerNumber : string;
-    
+    createdAt: string;
+    customerNumber: string;
+
 }
 export interface IUserInfo {
     userId: string;
@@ -53,7 +53,7 @@ export interface IChangePassword {
     confirmPassword: string;
 }
 
-export interface  IAppointment {
+export interface IAppointment {
     _id: string
     service: string;
     date: string;
@@ -67,7 +67,7 @@ export interface  IAppointment {
     hsn: string;
     tsn: string;
     isBookedOrBlocked: boolean;
-    appointmentId: string;  
+    appointmentId: string;
     userId?: string;
 }
 
@@ -101,7 +101,51 @@ export interface ICarBuy {
     userId: string;
     createdAt: string;
     carIdentificationNumber: string;
-   
+
 }
 
 export type TBuy = Partial<ICarBuy>;
+
+export interface ICarRent {
+    _id?: string;
+    user?: string;
+    carName: string;
+    carImage: string;
+    carAC: boolean;
+    carGear: string;
+    carPrice: string;
+    carDoors: string;
+    carPeople: string;
+    isBooked: boolean;
+    createdAt: string;
+    updatedAt?: string;
+    bookedSlots: Array<{ start: string; end: string }>;
+    totalPrice?: number;
+}
+
+export type TCarRent = Partial<ICarRent>;
+
+export interface IReservation {
+    _id: string;
+    vorname: string;
+    nachname: string;
+    geburtsdatum: string;
+    email: string;
+    carName?: string;
+    telefonnummer: string;
+    adresse: string;
+    postalCode: string;
+    stadt: string;
+    pickupDate?: string;
+    returnDate?: string;
+    pickupTime?: string;
+    returnTime?: string;
+    gesamtPrice: string;
+    carRentId?: string | undefined;
+    userId?: string;
+    user: IUser;
+    carRent: ICarRent;
+    paymentStatus: string;
+    isBooked: boolean;
+}
+export type TReservation = Partial<IReservation>;
