@@ -40,9 +40,7 @@ const UserDetails = () => {
     (appointment) => appointment.userId?.toString() === userId?.toString()
   );
 
-  const rentalAppointment = userReservations.filter(
-    (reservation) => reservation.user?._id?.toString() === userId?.toString()
-  );
+
 
   const handleDelete = () => {
     if (window.confirm("Möchten Sie diesen Benutzer wirklich löschen?")) {
