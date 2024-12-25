@@ -111,17 +111,17 @@ const AdminCalendar = () => {
                 }}
                 className="mb-8 border border-gray-500 rounded-lg shadow-lg"
             />
-            <div className="mt-5 flex flex-col items-center w-full">
-                <h3 className="text-3xl font-extrabold mb-6 text-gray-900">
+            <div className="mt-8 flex flex-col items-center w-full px-4 sm:px-6 lg:px-8">
+                <h3 className="text-4xl font-extrabold mb-8 text-gray-900 text-center">
                     Verfügbare Zeiten für {selectedDate.toLocaleDateString()}:
                 </h3>
-                <div className="w-full">
-                    <table className="min-w-full bg-white border rounded-lg shadow-md">
+                <div className="w-full overflow-x-auto">
+                    <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-lg">
                         <thead>
-                            <tr>
-                                <th className="py-4 px-6 bg-indigo-700 text-white font-bold uppercase text-left">Uhrzeit</th>
-                                <th className="py-4 px-6 bg-indigo-700 text-white font-bold uppercase text-center">Aktion</th>
-                                <th className="py-4 px-6 bg-indigo-700 text-white font-bold uppercase text-left">Details</th>
+                            <tr className="bg-gradient-to-r from-indigo-700 to-indigo-800 text-white">
+                                <th className="py-5 px-6 text-left font-semibold uppercase">Uhrzeit</th>
+                                <th className="py-5 px-6 text-center font-semibold uppercase">Aktion</th>
+                                <th className="py-5 px-6 text-left font-semibold uppercase">Details</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -130,23 +130,22 @@ const AdminCalendar = () => {
                                 const isDisabled = isPastTime(time);
                                 const appointmentDetails = appointmentsForSelectedDate.find(appt => appt.time === time);
                                 return (
-                                    <tr key={time} className={`border-b ${isBookedOrBlocked ? 'bg-red-200' : 'bg-green-200'} hover:bg-gray-200 transition-all duration-200`}>
-                                        <td className="py-4 px-6 text-xl font-bold text-gray-900">{time}</td>
-                                        <td className="py-4 px-6 text-center">
+                                    <tr key={time} className={`border-b ${isBookedOrBlocked ? 'bg-red-50' : 'bg-green-50'} hover:bg-gray-100 transition-all duration-300`}>
+                                        <td className="py-5 px-6 text-lg font-medium text-gray-900 whitespace-nowrap">{time}</td>
+                                        <td className="py-5 px-6 text-center">
                                             <button
                                                 onClick={() => handleTimeSlotClick(time)}
                                                 disabled={isDisabled}
-                                                className={`w-full px-6 py-3 rounded-full font-semibold transition-all shadow-md transform hover:scale-105 focus:outline-none
-                                                    ${isBookedOrBlocked ? 'bg-blue-800 hover:bg-blue-900 text-white' :
-                                                    'bg-blue-600 hover:bg-blue-700 text-white'}
-                                                    disabled:bg-gray-500 disabled:cursor-not-allowed`}
+                                                className={`w-full px-6 py-3 rounded-lg font-medium transition-transform transform hover:scale-105 focus:ring focus:ring-indigo-400 focus:outline-none
+                                        ${isBookedOrBlocked ? 'bg-blue-800 hover:bg-blue-900 text-white' : 'bg-indigo-600 hover:bg-indigo-700 text-white'}
+                                        disabled:bg-gray-400 disabled:cursor-not-allowed`}
                                             >
                                                 {isBookedOrBlocked ? 'Gebucht' : 'Blockieren'}
                                             </button>
                                         </td>
-                                        <td className="py-4 px-6 text-left">
+                                        <td className="py-5 px-6 text-left">
                                             {appointmentDetails ? (
-                                                <div className="text-sm space-y-2">
+                                                <div className="text-sm leading-relaxed space-y-3">
                                                     {appointmentDetails.email && (
                                                         <div>
                                                             <p className="font-semibold text-gray-900">Benutzer: {appointmentDetails.firstName} {appointmentDetails.lastName}</p>
@@ -162,25 +161,11 @@ const AdminCalendar = () => {
                                                     {appointmentDetails.phone && (
                                                         <p className="font-semibold text-gray-900">Telefon: <span className="font-normal text-gray-800">{appointmentDetails.phone}</span></p>
                                                     )}
-                                                    {appointmentDetails.email ? (
-                                                        <>
-                                                            {appointmentDetails.hsn ? (
-                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">{appointmentDetails.hsn}</span></p>
-                                                            ) : (
-                                                                <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">____</span></p>
-                                                            )}
-                                                            {appointmentDetails.tsn ? (
-                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">{appointmentDetails.tsn}</span></p>
-                                                            ) : (
-                                                                <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">____</span></p>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <p className="font-semibold text-gray-900">Details: <span className="font-normal text-gray-800">Vom Admin blockiert</span></p>
-                                                    )}
+                                                    <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">{appointmentDetails.hsn || '____'}</span></p>
+                                                    <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">{appointmentDetails.tsn || '____'}</span></p>
                                                 </div>
                                             ) : (
-                                                <p className="text-gray-600">Keine Details verfügbar</p>
+                                                <p className="text-gray-500">Keine Details verfügbar</p>
                                             )}
                                         </td>
                                     </tr>
@@ -190,6 +175,7 @@ const AdminCalendar = () => {
                     </table>
                 </div>
             </div>
+
             {showWarning && pendingAction && (
                 <WarningModal
                     message={`Sind Sie sicher, dass Sie den Termin um ${pendingAction.time} ${pendingAction.action === 'unblock' ? 'freigeben' : 'blockieren'} möchten?`}

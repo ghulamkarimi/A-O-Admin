@@ -2,6 +2,7 @@ import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from 
 import { IReservation, TReservation } from "../../interface";
 import { getReservation, updateStatusReservation } from "../../service";
 import { RootState } from "../store";
+import { rejectReservation } from '../../service/index';
 
 
 export interface IReservationState {
@@ -33,6 +34,17 @@ export const getReservationApi = createAsyncThunk("/reservation/getReservationAp
     }
 })
 
+export const rejectReservationApi = createAsyncThunk("/reservation/rejectReservationApi", async (reservation: TReservation, { rejectWithValue }) => {
+    try {
+        const response = await rejectReservation(reservation);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(
+            error.response?.data?.message || "Fehler beim Ablehnen der Reservierung"
+        );
+    }
+})
+
 export const updateStatusReservationApi = createAsyncThunk(
     "/reservation/updateStatusReservationApi",
     async (reservation: TReservation, { rejectWithValue }) => {
@@ -61,7 +73,7 @@ const reservationSlice = createSlice({
             state.status = "loading";
         })
         builder.addCase(getReservationApi.fulfilled, (state, action) => {
-           
+
             state.status = "succeeded";
 
             if (action.payload?.reservation) {
@@ -86,6 +98,15 @@ const reservationSlice = createSlice({
                 });
             } else {
                 console.error("Fehler: Ungültige API-Antwort", action.payload);
+            }
+        })
+        builder.addCase(rejectReservationApi.fulfilled, (state, action) => {
+            if (action.payload && action.payload.reservation) {
+                state.status = "succeeded";
+                reservationAdapter.updateOne(state, {
+                    id: action.payload.reservation._id,
+                    changes: action.payload.reservation,
+                });
             }
         });
 

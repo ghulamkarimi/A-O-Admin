@@ -162,4 +162,13 @@ export const updateStatusReservation = (reservation: TReservation) => {
       isBooked: reservation.isBooked,
     });
   };
+
+  export const rejectReservation = (reservation: TReservation) => {
+    const url = `${API_URL}/reservation/reject`;
+    return axios.post(url, {
+      reservationId: reservation._id,
+      email: reservation.email,
+      userId: reservation.userId,
+    });
+  };
   
