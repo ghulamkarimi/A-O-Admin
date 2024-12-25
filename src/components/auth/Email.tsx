@@ -10,9 +10,10 @@ import { requestPasswordResetApi } from "../../feuture/reducers/userSlice";
 interface EmailFormProps {
   onNextStep: () => void;
   setEmail: (email: string) => void;
+  className?: string;
 }
 
-const EmailForm: React.FC<EmailFormProps> = ({ onNextStep, setEmail }) => {
+const EmailForm: React.FC<EmailFormProps> = ({ onNextStep, setEmail,className }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const formik = useFormik({

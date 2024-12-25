@@ -2,6 +2,7 @@ import { Link, useLocation } from "react-router-dom";
 
 const CustomSidebar = () => {
     const location = useLocation();
+    const userId = localStorage.getItem("userId");
 
     return (
         <div className="hidden md:flex min-h-screen h-full w-52 bg-gray-800 text-white flex-col fixed">
@@ -86,7 +87,9 @@ const CustomSidebar = () => {
                         <Link
                             to="/login"
                             className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/cars" ? "bg-gray-700" : ""
-                                }`}
+                                } ${userId ? "hidden" : "block"}
+                                
+                                `}
                         >
                             Login
                         </Link>

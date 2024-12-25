@@ -5,7 +5,7 @@ import {
     EntityState,
     PayloadAction,
 } from "@reduxjs/toolkit";
-import { userLogin, userRegister, getAllUsers, userLogout, requestPasswordReset, confirmEmailVerificationCode, checkAccessToken } from '../../service/index';
+import { userLogin, userRegister, getAllUsers, userLogout, requestPasswordReset, confirmEmailVerificationCode, checkAccessToken, deleteAccount } from '../../service/index';
 import { RootState } from "../store";
 import { IUser, IUserInfo, TUser } from "../../interface";
 import { IChangePassword } from "../../interface";
@@ -76,7 +76,7 @@ export const fetchUsers = createAsyncThunk("users/fetchUsers", async (_, { rejec
 export const userLogoutApi = createAsyncThunk("users/userLogoutApi", async (_, { rejectWithValue }) => {
     try {
         const response = await userLogout();
-        
+        localStorage.clear();
         return response.data;
     } catch (error) {
 
@@ -97,7 +97,20 @@ export const changePasswordApi = createAsyncThunk(
         }
     }
 );
- 
+
+export const deleteAccountApi = createAsyncThunk(
+    "user/deleteAccountApi",
+    async ({ userId, adminId }: { userId: string; adminId: string }, { rejectWithValue }) => {
+        try {
+            const response = await deleteAccount(userId, adminId);  // API Call mit beiden IDs
+            return response.data;
+        } catch (error: any) {
+            return rejectWithValue(
+                error.response?.data?.message || "Fehler beim Löschen des Kontos"
+            );
+        }
+    }
+);
 
 
 export const checkAccessTokenApi = createAsyncThunk(
@@ -237,6 +250,11 @@ const userSlice = createSlice({
               .addCase(checkAccessTokenApi.rejected, (state, action) => {
                 state.status = "failed";
                 state.error = action.error.message || "Token check failed";
+            })
+
+            .addCase(deleteAccountApi.fulfilled, (state, action) => {
+                state.status = "succeeded";
+                state.message = action.payload.message;
             })
               .addCase(confirmEmailVerificationCodeApi.fulfilled, (state, action) => {
                 state.status = "succeeded";

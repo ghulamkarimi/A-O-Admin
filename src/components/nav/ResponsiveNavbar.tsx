@@ -4,6 +4,7 @@ import { HiMenu } from "react-icons/hi"; // Installiere react-icons mit "npm ins
 
 const ResponsiveNavbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const userId = localStorage.getItem("userId");
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
@@ -56,7 +57,11 @@ const ResponsiveNavbar = () => {
                             </Link>
                         </li>
                         <li>
-                            <Link to="/login" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
+                            <Link 
+                            
+                            to="/login" onClick={() => setIsOpen(false)} 
+                            className={` px-4 py-2 hover:bg-gray-700 rounded ${userId ? "hidden" : "block"}`}	
+                            >
                                 Login
                             </Link>
                         </li>

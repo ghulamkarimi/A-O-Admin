@@ -53,103 +53,99 @@ const Login = () => {
 
   return (
     <div
-      className="flex flex-col md:flex-row min-h-screen background text-white"
-      style={{ backgroundImage: "url('/homeBackground.jpg')"  }}
+    className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-500 via-gray-800 to-black rounded-lg"
     >
-      {/* Linke Seite: Login */}
-      <div className="flex-1 flex items-center justify-center p-6">
-        <div className="bg-black/70 rounded-lg shadow-2xl p-12 max-w-md w-full">
-          <div className="text-center mb-10">
-            <h3 className="text-4xl font-extrabold  mb-2">Willkommen zurück!</h3>
-            <p className="text-lg">
-              Melden Sie sich mit Ihren Zugangsdaten an, um fortzufahren.
-            </p>
+      <div className="bg-gray-900 text-white rounded-xl shadow-xl p-10 max-w-md w-full border border-gray-700">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-extrabold mb-2">Willkommen zurück!</h1>
+          <p className="text-sm text-gray-400">
+            Bitte melden Sie sich mit Ihren Zugangsdaten an.
+          </p>
+        </div>
+        
+        <form onSubmit={formik.handleSubmit} className="space-y-6">
+          {/* Email Input */}
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium mb-1">
+              E-Mail-Adresse
+            </label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              value={formik.values.email}
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              placeholder="name@example.com"
+              className={`w-full px-4 py-3 rounded-lg bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                formik.touched.email && formik.errors.email
+                  ? "border-red-500"
+                  : "border-gray-700"
+              }`}
+            />
+            {formik.touched.email && formik.errors.email && (
+              <p className="text-red-400 text-sm mt-2">{formik.errors.email}</p>
+            )}
           </div>
-          <form onSubmit={formik.handleSubmit} className="space-y-8">
-            <div>
-              <label htmlFor="email" className="block text-lg font-semibold">
-                E-Mail
-              </label>
+
+          {/* Password Input */}
+          <div>
+            <label htmlFor="password" className="block text-sm font-medium mb-1">
+              Passwort
+            </label>
+            <div className="relative">
               <input
-                type="email"
-                id="email"
-                name="email"
-                value={formik.values.email}
+                type={showPassword ? "text" : "password"}
+                id="password"
+                name="password"
+                value={formik.values.password}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
-                placeholder="E-Mail-Adresse"
-                className={`mt-2 block w-full px-4 py-3 border-2 rounded-lg shadow-sm text-gray-900 focus:ring-blue-600 focus:border-blue-600 transition-all ${
-                  formik.touched.email && formik.errors.email
+                placeholder="********"
+                className={`w-full px-4 py-3 rounded-lg bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none ${
+                  formik.touched.password && formik.errors.password
                     ? "border-red-500"
-                    : "border-gray-300"
+                    : "border-gray-700"
                 }`}
               />
-              <div className="h-5">
-                {formik.touched.email && formik.errors.email && (
-                  <p className="text-red-600 text-sm mt-1">{formik.errors.email}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="relative">
-              <label htmlFor="password" className="block text-lg font-semibold">
-                Passwort
-              </label>
-              <div className="relative mt-2">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  name="password"
-                  value={formik.values.password}
-                  onChange={formik.handleChange}
-                  onBlur={formik.handleBlur}
-                  placeholder="Passwort"
-                  className={`block w-full px-4 py-3 border-2 rounded-lg shadow-sm text-gray-900 focus:ring-blue-600 focus:border-blue-600 transition-all ${
-                    formik.touched.password && formik.errors.password
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
-                />
-                <span
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
-                >
-                  {showPassword ? (
-                    <IoEyeOffSharp className="text-gray-500 hover:text-blue-600" />
-                  ) : (
-                    <IoEyeSharp className="text-gray-500 hover:text-blue-600" />
-                  )}
-                </span>
-              </div>
-              <div className="h-5">
-                {formik.touched.password && formik.errors.password && (
-                  <p className="text-red-600 text-sm mt-1">{formik.errors.password}</p>
-                )}
-              </div>
-            </div>
-
-            <div className="text-center">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className={`w-full px-6 py-3 text-lg font-bold bg-gradient-to-r from-blue-600 to-purple-600 text-white rounded-lg hover:bg-gradient-to-r hover:from-blue-700 hover:to-purple-700 transition-all ${
-                  isLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute inset-y-0 right-4 flex items-center cursor-pointer"
               >
-                {isLoading ? "Lädt..." : "Anmelden"}
-              </button>
+                {showPassword ? (
+                  <IoEyeOffSharp className="text-gray-500 hover:text-gray-300" />
+                ) : (
+                  <IoEyeSharp className="text-gray-500 hover:text-gray-300" />
+                )}
+              </span>
             </div>
-          </form>
+            {formik.touched.password && formik.errors.password && (
+              <p className="text-red-400 text-sm mt-2">{formik.errors.password}</p>
+            )}
+          </div>
 
-          {/* Passwort vergessen */}
-          <div className="text-center mt-6">
+          {/* Submit Button */}
+          <div>
             <button
-              onClick={() => navigate("/forgetPassword")}
-              className="font-semibold transition-all"
+              type="submit"
+              disabled={isLoading}
+              className={`w-full px-6 py-3 text-lg font-bold rounded-lg bg-blue-600 hover:bg-blue-700 transition-all ${
+                isLoading ? "opacity-50 cursor-not-allowed" : ""
+              }`}
             >
-              Passwort vergessen?
+              {isLoading ? "Lädt..." : "Anmelden"}
             </button>
           </div>
+        </form>
+
+        {/* Passwort vergessen */}
+        <div className="text-center mt-6">
+          <button
+            onClick={() => navigate("/forgetPassword")}
+            className="text-sm text-blue-400 hover:underline"
+          >
+            Passwort vergessen?
+          </button>
         </div>
       </div>
     </div>

@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { displayUsers } from "../feuture/reducers/userSlice";
+import { deleteAccountApi, displayUsers } from "../feuture/reducers/userSlice";
 import { displayAppointments } from "../feuture/reducers/appointmentSlice";
 import { AllReservation, getReservationApi, updateStatusReservationApi } from "../feuture/reducers/resevationSlice";
 import FormattedDate from "../components/FormatesDate";
@@ -42,9 +42,18 @@ const UserDetails = () => {
 
 
 
-  const handleDelete = () => {
+  const handleDelete = (userId: string, adminId: string) => {
+    const dispatch = useDispatch<AppDispatch>();
+  
     if (window.confirm("Möchten Sie diesen Benutzer wirklich löschen?")) {
-      alert("Benutzer erfolgreich gelöscht.");
+      dispatch(deleteAccountApi({ userId, adminId }))
+        .unwrap()  // Warte auf die API-Antwort (erlaubt Nutzung von .then/.catch)
+        .then((response) => {
+          NotificationService.success(response.message || "Benutzer erfolgreich gelöscht.");
+        })
+        .catch((error) => {
+          NotificationService.error(error || "Fehler beim Löschen des Benutzers.");
+        });
     }
   };
 
@@ -103,14 +112,21 @@ const UserDetails = () => {
           alt="Profilbild"
           className="mt-4 w-32 h-32 rounded-full object-cover"
         />
-        <div className="flex justify-end mt-6">
-          <button
-            className="bg-red-500 text-white px-4 py-2 rounded-md"
-            onClick={handleDelete}
-          >
-            Löschen
-          </button>
-        </div>
+       <div className="flex justify-end mt-6">
+  <button
+    className="bg-red-500 text-white px-4 py-2 rounded-md"
+    onClick={() => {
+      if (userId) {
+        handleDelete(userId, "adminId");  // handleDelete wird nur aufgerufen, wenn userId existiert
+      } else {
+        NotificationService.error("Benutzer-ID ist nicht vorhanden.");
+      }
+    }}
+  >
+    Löschen
+  </button>
+</div>
+
       </div>
 
       {/* Werkstattbuchungen */}

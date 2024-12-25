@@ -199,8 +199,10 @@ const OfferList = () => {
             </p>
 
             {/* Create Offer Form UI mit Formik */}
-            <div className="bg-white p-6 rounded-lg shadow-md mb-6">
-                <h2 className="text-2xl font-bold text-gray-800 mb-4">Neues Angebot erstellen</h2>
+            <div className="bg-white p-10 rounded-2xl shadow-lg mb-12 max-w-5xl mx-auto">
+                <h2 className="text-4xl font-extrabold text-gray-900 mb-8">
+                    Neues Angebot erstellen 📦
+                </h2>
                 <Formik
                     initialValues={{
                         title: "",
@@ -225,9 +227,11 @@ const OfferList = () => {
 
                             const response = await dispatch(createOffer(formData)).unwrap();
                             NotificationService.success(response.message || "Angebot erstellt!");
-                            resetForm(); // Formular zurücksetzen nach dem Erstellen
+                            resetForm();
                         } catch (error: any) {
-                            NotificationService.error(error.message || "Fehler beim Erstellen des Angebots.");
+                            NotificationService.error(
+                                error.message || "Fehler beim Erstellen des Angebots."
+                            );
                         }
                     }}
                 >
@@ -243,39 +247,50 @@ const OfferList = () => {
                     }) => (
                         <form
                             onSubmit={handleSubmit}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
                         >
-                            <div>
+                            <div className="col-span-2">
+                                <label className="block text-lg font-medium text-gray-700 mb-2">
+                                    Titel
+                                </label>
                                 <input
-                                    className="border border-gray-300 p-2 rounded w-full"
+                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
                                     type="text"
-                                    placeholder="Titel"
+                                    placeholder="Angebotstitel eingeben"
                                     name="title"
                                     value={values.title}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
                                 {errors.title && touched.title && (
-                                    <div className="text-red-500 text-sm">{errors.title}</div>
+                                    <div className="text-red-500 text-sm mt-1">{errors.title}</div>
                                 )}
                             </div>
-                            <div>
-                                <input
-                                    className="border border-gray-300 p-2 rounded w-full"
-                                    type="text"
-                                    placeholder="Beschreibung"
+
+                            <div className="col-span-3">
+                                <label className="block text-lg font-medium text-gray-700 mb-2">
+                                    Beschreibung
+                                </label>
+                                <textarea
+                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
+                                    placeholder="Beschreibe das Angebot"
                                     name="description"
                                     value={values.description}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
+                                    rows={4}
                                 />
                                 {errors.description && touched.description && (
-                                    <div className="text-red-500 text-sm">{errors.description}</div>
+                                    <div className="text-red-500 text-sm mt-1">{errors.description}</div>
                                 )}
                             </div>
-                            <div>
+
+                            <div className="col-span-1">
+                                <label className="block text-lg font-medium text-gray-700 mb-2">
+                                    Bild hochladen
+                                </label>
                                 <input
-                                    className="border border-gray-300 p-2 rounded w-full"
+                                    className="border border-gray-300 p-4 rounded-xl w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                     type="file"
                                     name="imageUrl"
                                     onChange={(event) => {
@@ -285,42 +300,48 @@ const OfferList = () => {
                                     }}
                                     onBlur={handleBlur}
                                 />
-                                {errors.imageUrl && touched.imageUrl && (
-                                    <div className="text-red-500 text-sm">{errors.imageUrl}</div>
-                                )}
                             </div>
+
                             <div>
+                                <label className="block text-lg font-medium text-gray-700 mb-2">
+                                    Alter Preis (€)
+                                </label>
                                 <input
-                                    className="border border-gray-300 p-2 rounded w-full"
+                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
                                     type="number"
-                                    placeholder="Alter Preis (€)"
+                                    placeholder="Alter Preis"
                                     name="oldPrice"
                                     value={values.oldPrice}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
                                 {errors.oldPrice && touched.oldPrice && (
-                                    <div className="text-red-500 text-sm">{errors.oldPrice}</div>
+                                    <div className="text-red-500 text-sm mt-1">{errors.oldPrice}</div>
                                 )}
                             </div>
+
                             <div>
+                                <label className="block text-lg font-medium text-gray-700 mb-2">
+                                    Neuer Preis (€)
+                                </label>
                                 <input
-                                    className="border border-gray-300 p-2 rounded w-full"
+                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
                                     type="number"
-                                    placeholder="Neuer Preis (€)"
+                                    placeholder="Neuer Preis"
                                     name="newPrice"
                                     value={values.newPrice}
                                     onChange={handleChange}
                                     onBlur={handleBlur}
                                 />
                                 {errors.newPrice && touched.newPrice && (
-                                    <div className="text-red-500 text-sm">{errors.newPrice}</div>
+                                    <div className="text-red-500 text-sm mt-1">{errors.newPrice}</div>
                                 )}
                             </div>
-                            <div className="col-span-3">
+
+                            <div className="col-span-3 flex justify-end">
                                 <button
                                     type="submit"
-                                    className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-all"
+                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl transition-all"
                                     disabled={isSubmitting}
                                 >
                                     {isSubmitting ? "Erstelle..." : "Angebot erstellen"}
@@ -331,120 +352,159 @@ const OfferList = () => {
                 </Formik>
             </div>
 
+
             {/* Offers List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {offers.length > 0 ? (
                     offers.map((offer) => (
-
                         <div
                             key={offer._id}
-                            className="bg-white shadow-md rounded-lg border border-gray-200 p-4 hover:shadow-lg transition-shadow"
+                            className="bg-white rounded-xl shadow-xl border border-gray-200 p-6 hover:shadow-2xl transition-all transform hover:scale-[1.02]"
                         >
                             {editingOfferId === offer._id ? (
                                 <form
                                     encType="multipart/form-data"
                                     onSubmit={() => {
                                         setIsSubmitting(true);
-                                        handleEditOffer(offer._id).finally(() => setIsSubmitting(false));
-                                        handleEditOffer(offer._id);
+                                        handleEditOffer(offer._id).finally(() =>
+                                            setIsSubmitting(false)
+                                        );
                                     }}
-                                    className="space-y-4"
+                                    className="space-y-6"
                                 >
-                                    <input
-                                        type="text"
-                                        className="w-full border p-2 rounded"
-                                        value={editValues.title}
-                                        onChange={(e) => setEditValues({ ...editValues, title: e.target.value })}
-                                    />
-                                    <textarea
-                                        className="w-full border p-2 rounded"
-                                        value={editValues.description}
-                                        onChange={(e) => setEditValues({ ...editValues, description: e.target.value })}
-                                    />
-                                    <input
-                                        type="number"
-                                        className="w-full border p-2 rounded"
-                                        value={editValues.oldPrice}
-                                        onChange={(e) => setEditValues({ ...editValues, oldPrice: Number(e.target.value) })}
-                                    />
-                                    <input
-                                        type="number"
-                                        className="w-full border p-2 rounded"
-                                        value={editValues.newPrice}
-                                        onChange={(e) => setEditValues({ ...editValues, newPrice: Number(e.target.value) })}
-                                    />
-                                    <input
-                                        type="file"
-                                        className="w-full border p-2 rounded"
-                                        onChange={(e) => {
-                                            if (e.currentTarget.files) {
+                                    <div className="flex flex-col gap-4">
+                                        <input
+                                            type="text"
+                                            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                            value={editValues.title}
+                                            onChange={(e) =>
+                                                setEditValues({ ...editValues, title: e.target.value })
+                                            }
+                                            placeholder="Titel"
+                                        />
+                                        <textarea
+                                            className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                            value={editValues.description}
+                                            onChange={(e) =>
                                                 setEditValues({
                                                     ...editValues,
-                                                    imageUrl: e.currentTarget.files[0],
-                                                });
+                                                    description: e.target.value,
+                                                })
                                             }
-                                        }}
-                                    />
-                                    <div className="flex space-x-2">
+                                            placeholder="Beschreibung"
+                                            rows={3}
+                                        />
+                                        <div className="grid grid-cols-2 gap-4">
+                                            <input
+                                                type="number"
+                                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                value={editValues.oldPrice}
+                                                onChange={(e) =>
+                                                    setEditValues({
+                                                        ...editValues,
+                                                        oldPrice: Number(e.target.value),
+                                                    })
+                                                }
+                                                placeholder="Alter Preis (€)"
+                                            />
+                                            <input
+                                                type="number"
+                                                className="w-full border border-gray-300 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                                                value={editValues.newPrice}
+                                                onChange={(e) =>
+                                                    setEditValues({
+                                                        ...editValues,
+                                                        newPrice: Number(e.target.value),
+                                                    })
+                                                }
+                                                placeholder="Neuer Preis (€)"
+                                            />
+                                        </div>
+
+                                        <input
+                                            type="file"
+                                            className="border border-gray-300 p-3 rounded-lg file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                            onChange={(e) => {
+                                                if (e.currentTarget.files) {
+                                                    setEditValues({
+                                                        ...editValues,
+                                                        imageUrl: e.currentTarget.files[0],
+                                                    });
+                                                }
+                                            }}
+                                        />
+                                    </div>
+
+                                    <div className="flex justify-end gap-4">
                                         <button
                                             type="button"
-                                            className="bg-gray-500 text-white px-4 py-2 rounded"
+                                            className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg transition-all"
                                             onClick={cancelEditing}
                                         >
                                             Abbrechen
                                         </button>
                                         <button
                                             type="submit"
-                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-md transition-all"
+                                            className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg transition-all"
                                             disabled={isSubmitting}
                                         >
-                                            {isSubmitting ? "Erstelle..." : "Angebot erstellen"}
+                                            {isSubmitting ? "Speichere..." : "Speichern"}
                                         </button>
-
                                     </div>
                                 </form>
                             ) : (
                                 <>
-                                    <div className="flex justify-between items-center">
-                                        <h2 className="text-xl font-bold text-gray-800 mb-2">{offer.title}</h2>
-                                        <span className="text-red-500 font-bold">ab{' '}
-                                            {new Date(offer.createdAt).toLocaleDateString()}
+                                    <div className="flex justify-between items-center mb-4">
+                                        <h2 className="text-2xl font-bold text-gray-800 truncate">
+                                            {offer.title}
+                                        </h2>
+                                        <span className="text-sm font-semibold text-red-500">
+                                            ab {new Date(offer.createdAt).toLocaleDateString()}
                                         </span>
                                     </div>
                                     <img
-                                        className="w-full h-60 object-cover rounded-md mb-4"
+                                        className="w-full h-60 object-cover rounded-lg mb-6"
                                         src={offer.imageUrl}
                                         alt={offer.title}
                                     />
-                                    <p className="text-gray-600 mb-2">{offer.description}</p>
-                                    <div className="flex justify-between items-center">
+                                    <p className="text-gray-700 mb-4">{offer.description}</p>
+
+                                    <div className="flex justify-between items-center mb-6">
                                         <div>
-                                            <p className="text-gray-500 line-through">{offer.oldPrice} €</p>
-                                            <p className="text-red-500 font-semibold">{offer.newPrice} €</p>
+                                            <p className="text-gray-500 line-through text-lg">
+                                                {offer.oldPrice} €
+                                            </p>
+                                            <p className="text-red-500 font-extrabold text-2xl">
+                                                {offer.newPrice} €
+                                            </p>
                                         </div>
-                                        <button
-                                            onClick={() => startEditing(offer)}
-                                            className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded text-sm transition-all mr-2"
-                                        >
-                                            Bearbeiten
-                                        </button>
-                                        <button
-                                            onClick={() => handleDeleteOffer(offer._id)}
-                                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded text-sm transition-all"
-                                        >
-                                            Löschen
-                                        </button>
+
+                                        <div className="flex gap-3">
+                                            <button
+                                                onClick={() => startEditing(offer)}
+                                                className="bg-blue-500 hover:bg-blue-600 text-white px-5 py-2 rounded-lg text-sm transition-all"
+                                            >
+                                                Bearbeiten
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteOffer(offer._id)}
+                                                className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg text-sm transition-all"
+                                            >
+                                                Löschen
+                                            </button>
+                                        </div>
                                     </div>
                                 </>
                             )}
                         </div>
                     ))
                 ) : (
-                    <div className="col-span-3 text-center text-gray-500">
-                        Keine Angebote verfügbar.
+                    <div className="col-span-3 text-center py-12">
+                        <p className="text-gray-500 text-xl">Keine Angebote verfügbar.</p>
                     </div>
                 )}
             </div>
+
         </div>
     );
 };
