@@ -246,108 +246,115 @@ const OfferList = () => {
                         isSubmitting,
                     }) => (
                         <form
-                            onSubmit={handleSubmit}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-                        >
-                            <div className="col-span-2">
-                                <label className="block text-lg font-medium text-gray-700 mb-2">
-                                    Titel
-                                </label>
-                                <input
-                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
-                                    type="text"
-                                    placeholder="Angebotstitel eingeben"
-                                    name="title"
-                                    value={values.title}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                                {errors.title && touched.title && (
-                                    <div className="text-red-500 text-sm mt-1">{errors.title}</div>
-                                )}
-                            </div>
-
-                            <div className="col-span-3">
-                                <label className="block text-lg font-medium text-gray-700 mb-2">
-                                    Beschreibung
-                                </label>
-                                <textarea
-                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
-                                    placeholder="Beschreibe das Angebot"
-                                    name="description"
-                                    value={values.description}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                    rows={4}
-                                />
-                                {errors.description && touched.description && (
-                                    <div className="text-red-500 text-sm mt-1">{errors.description}</div>
-                                )}
-                            </div>
-
-                            <div className="col-span-1">
-                                <label className="block text-lg font-medium text-gray-700 mb-2">
-                                    Bild hochladen
-                                </label>
-                                <input
-                                    className="border border-gray-300 p-4 rounded-xl w-full file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                    type="file"
-                                    name="imageUrl"
-                                    onChange={(event) => {
-                                        if (event.currentTarget.files) {
-                                            setFieldValue("imageUrl", event.currentTarget.files[0]);
-                                        }
-                                    }}
-                                    onBlur={handleBlur}
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-lg font-medium text-gray-700 mb-2">
-                                    Alter Preis (€)
-                                </label>
-                                <input
-                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
-                                    type="number"
-                                    placeholder="Alter Preis"
-                                    name="oldPrice"
-                                    value={values.oldPrice}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                                {errors.oldPrice && touched.oldPrice && (
-                                    <div className="text-red-500 text-sm mt-1">{errors.oldPrice}</div>
-                                )}
-                            </div>
-
-                            <div>
-                                <label className="block text-lg font-medium text-gray-700 mb-2">
-                                    Neuer Preis (€)
-                                </label>
-                                <input
-                                    className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
-                                    type="number"
-                                    placeholder="Neuer Preis"
-                                    name="newPrice"
-                                    value={values.newPrice}
-                                    onChange={handleChange}
-                                    onBlur={handleBlur}
-                                />
-                                {errors.newPrice && touched.newPrice && (
-                                    <div className="text-red-500 text-sm mt-1">{errors.newPrice}</div>
-                                )}
-                            </div>
-
-                            <div className="col-span-3 flex justify-end">
-                                <button
-                                    type="submit"
-                                    className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl transition-all"
-                                    disabled={isSubmitting}
-                                >
-                                    {isSubmitting ? "Erstelle..." : "Angebot erstellen"}
-                                </button>
-                            </div>
-                        </form>
+                        onSubmit={handleSubmit}
+                        className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+                      >
+                        {/* Titel */}
+                        <div className="col-span-1 md:col-span-2 lg:col-span-2">
+                          <label className="block text-lg font-medium text-gray-700 mb-2">
+                            Titel
+                          </label>
+                          <input
+                            className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
+                            type="text"
+                            placeholder="Angebotstitel eingeben"
+                            name="title"
+                            value={values.title}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                          {errors.title && touched.title && (
+                            <div className="text-red-500 text-sm mt-1">{errors.title}</div>
+                          )}
+                        </div>
+                      
+                        {/* Beschreibung */}
+                        <div className="col-span-1 md:col-span-2 lg:col-span-3">
+                          <label className="block text-lg font-medium text-gray-700 mb-2">
+                            Beschreibung
+                          </label>
+                          <textarea
+                            className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
+                            placeholder="Beschreibe das Angebot"
+                            name="description"
+                            value={values.description}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                            rows={4}
+                          />
+                          {errors.description && touched.description && (
+                            <div className="text-red-500 text-sm mt-1">{errors.description}</div>
+                          )}
+                        </div>
+                      
+                        {/* Bild hochladen */}
+                        <div className="col-span-1">
+                          <label className="block text-lg font-medium text-gray-700 mb-2">
+                            Bild hochladen
+                          </label>
+                          <input
+                            className="border border-gray-300 px-1 py-3 rounded-xl w-full file:mr-2 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            type="file"
+                            name="imageUrl"
+                            onChange={(event) => {
+                              if (event.currentTarget.files) {
+                                setFieldValue("imageUrl", event.currentTarget.files[0]);
+                              }
+                            }}
+                            onBlur={handleBlur}
+                          />
+                        </div>
+                      
+                        {/* Alter Preis */}
+                        <div className="col-span-1 md:col-span-1">
+                          <label className="block text-lg font-medium text-gray-700 mb-2">
+                            Alter Preis (€)
+                          </label>
+                          <input
+                            className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
+                            type="number"
+                            placeholder="Alter Preis"
+                            name="oldPrice"
+                            value={values.oldPrice}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                          {errors.oldPrice && touched.oldPrice && (
+                            <div className="text-red-500 text-sm mt-1">{errors.oldPrice}</div>
+                          )}
+                        </div>
+                      
+                        {/* Neuer Preis */}
+                        <div className="col-span-1 md:col-span-1">
+                          <label className="block text-lg font-medium text-gray-700 mb-2">
+                            Neuer Preis (€)
+                          </label>
+                          <input
+                            className="border border-gray-300 p-4 rounded-xl w-full focus:ring-2 focus:ring-blue-400 transition-all"
+                            type="number"
+                            placeholder="Neuer Preis"
+                            name="newPrice"
+                            value={values.newPrice}
+                            onChange={handleChange}
+                            onBlur={handleBlur}
+                          />
+                          {errors.newPrice && touched.newPrice && (
+                            <div className="text-red-500 text-sm mt-1">{errors.newPrice}</div>
+                          )}
+                        </div>
+                      
+                        {/* Submit Button */}
+                        <div className="col-span-1 md:col-span-2 lg:col-span-3 flex justify-end">
+                          <button
+                            type="submit"
+                            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8 py-4 rounded-xl transition-all"
+                            disabled={isSubmitting}
+                          >
+                            {isSubmitting ? "Erstelle..." : "Angebot erstellen"}
+                          </button>
+                        </div>
+                      </form>
+                      
                     )}
                 </Formik>
             </div>
