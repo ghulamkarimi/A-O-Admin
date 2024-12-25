@@ -41,9 +41,9 @@ export const checkAccessToken = () => {
     });
 };
 
-export const deleteAccount = (userId: string , adminId:string) => {
-    const url = `${API_URL}/user/deleteAccount`;
-    return axios.delete(url, { data: { userId, adminId } });
+export const deleteAccount = (targetUserId:string) => {
+    const url = `${API_URL}/user/deleteAccount/${targetUserId}`;
+    return axiosJWT.delete(url);
 }
 
 

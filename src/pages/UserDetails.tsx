@@ -8,10 +8,12 @@ import { NotificationService } from "../service/NotificationService";
 import { AppDispatch } from "../feuture/store";
 import { useEffect, useState } from "react";
 
-
 const UserDetails = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { userId } = useParams(); // Extrahiere Benutzer-ID aus der URL
+
+
+
   const users = useSelector(displayUsers);
   const appointments = useSelector(displayAppointments);
   const userReservations = useSelector(AllReservation);
@@ -19,41 +21,43 @@ const UserDetails = () => {
   const [loading, setLoading] = useState(true);
   const [filteredReservations, setFilteredReservations] = useState<any[]>([]);
 
-
   useEffect(() => {
-    const rentalAppointment = userReservations.filter(
-      (reservation) => reservation.user?._id?.toString() === userId?.toString()
-    );
+    const fetchData = async () => {
+      setLoading(true);
+      await dispatch(getReservationApi());
 
-    setFilteredReservations(rentalAppointment);
-    setLoading(false);
-  }, [userReservations, userId]);
+      // Filter reservations based on userId
+      const rentalAppointment = userReservations.filter(
+        (reservation) => reservation.user?._id?.toString() === userId?.toString()
+      );
 
- 
+      setFilteredReservations(rentalAppointment);
+      setLoading(false);
+    };
+
+    if (userId) {
+      fetchData();
+    }
+  }, [dispatch, userReservations, userId]);
+
   const user = users.find((u) => u._id === userId); // Finde den Benutzer anhand der ID
   if (!user) {
     return <div>Benutzer nicht gefunden</div>;
   }
-  console.log(user);
+
 
   const workshopAppointments = appointments.filter(
     (appointment) => appointment.userId?.toString() === userId?.toString()
   );
 
-
-
-  const handleDelete = (userId: string, adminId: string) => {
-    const dispatch = useDispatch<AppDispatch>();
-  
+  const handleDelete = async (userId: string) => {
     if (window.confirm("Möchten Sie diesen Benutzer wirklich löschen?")) {
-      dispatch(deleteAccountApi({ userId, adminId }))
-        .unwrap()  // Warte auf die API-Antwort (erlaubt Nutzung von .then/.catch)
-        .then((response) => {
-          NotificationService.success(response.message || "Benutzer erfolgreich gelöscht.");
-        })
-        .catch((error) => {
-          NotificationService.error(error || "Fehler beim Löschen des Benutzers.");
-        });
+      try {
+        const response = await dispatch(deleteAccountApi(userId)).unwrap();
+        NotificationService.success(response.message);
+      } catch (error: any) {
+        NotificationService.error(error.message);
+      }
     }
   };
 
@@ -75,20 +79,6 @@ const UserDetails = () => {
       NotificationService.error("Fehler beim Aktualisieren des Zahlungsstatus.");
     }
   };
-  
-  useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      await dispatch(getReservationApi());
-      const rentalAppointment = userReservations.filter(
-        (reservation) => reservation.user?._id?.toString() === userId?.toString()
-      );
-      setFilteredReservations(rentalAppointment);
-      setLoading(false);
-    };
-
-    fetchData();
-  }, [dispatch, userReservations, userId]);
 
   return (
     <div className="p-6">
@@ -112,21 +102,20 @@ const UserDetails = () => {
           alt="Profilbild"
           className="mt-4 w-32 h-32 rounded-full object-cover"
         />
-       <div className="flex justify-end mt-6">
-  <button
-    className="bg-red-500 text-white px-4 py-2 rounded-md"
-    onClick={() => {
-      if (userId) {
-        handleDelete(userId, "adminId");  // handleDelete wird nur aufgerufen, wenn userId existiert
-      } else {
-        NotificationService.error("Benutzer-ID ist nicht vorhanden.");
-      }
-    }}
-  >
-    Löschen
-  </button>
-</div>
-
+        <div className="flex justify-end mt-6">
+          <button
+            className="bg-red-500 text-white px-4 py-2 rounded-md"
+            onClick={() => {
+              if (userId) {
+                handleDelete(userId);
+              } else {
+                NotificationService.error("Benutzer-ID ist nicht vorhanden.");
+              }
+            }}
+          >
+            Löschen
+          </button>
+        </div>
       </div>
 
       {/* Werkstattbuchungen */}
@@ -137,8 +126,7 @@ const UserDetails = () => {
             {workshopAppointments.map((appointment) => (
               <li key={appointment._id} className="mb-4 border-b pb-4">
                 <p>
-                  <strong>Datum:</strong>{" "}
-                  {new Date(appointment.date).toLocaleDateString()}
+                  <strong>Datum:</strong> {new Date(appointment.date).toLocaleDateString()}
                 </p>
                 <p>
                   <strong>Zeit:</strong> {appointment.time}
@@ -147,8 +135,7 @@ const UserDetails = () => {
                   <strong>Service:</strong> {appointment.service || "N/A"}
                 </p>
                 <p>
-                  <strong>Kennzeichen:</strong>{" "}
-                  {appointment.licensePlate || "N/A"}
+                  <strong>Kennzeichen:</strong> {appointment.licensePlate || "N/A"}
                 </p>
               </li>
             ))}
@@ -173,7 +160,7 @@ const UserDetails = () => {
               {filteredReservations.map((reservation) => (
                 <div
                   key={reservation._id}
-                  className="border border-gray-200 rounded-lg shadow-lg overflow-hidden bg-white  "
+                  className="border border-gray-200 rounded-lg shadow-lg overflow-hidden bg-white"
                 >
                   <img
                     className="w-full h-72 object-cover"
@@ -184,7 +171,6 @@ const UserDetails = () => {
                     <h3 className="text-3xl font-semibold text-gray-900">
                       {reservation.carRent.carName}
                     </h3>
-
                     <div className="text-lg space-y-4">
                       <p>
                         <strong>Abholzeit:</strong>{" "}
@@ -208,7 +194,6 @@ const UserDetails = () => {
                       </p>
                       <div>
                         <strong>Zahlungsstatus:</strong>{" "}
-
                         <select
                           className="ml-4 px-2 py-1 rounded-md border"
                           value={reservation.paymentStatus}
