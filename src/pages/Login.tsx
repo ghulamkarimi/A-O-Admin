@@ -53,8 +53,8 @@ const Login = () => {
 
   return (
     <div
-    className={`flex w-full items-center border-2 justify-center min-h-screen  rounded-lg bg-[url('/ölwechsel.jpeg')] bg-cover bg-center`}
-   
+      className={`flex w-full items-center border-2 justify-center min-h-screen  rounded-lg bg-[url('/ölwechsel.jpeg')] bg-cover bg-center`}
+
     >
       <div className="bg-gray-900 text-white rounded-xl shadow-xl p-10 max-w-md w-full border border-gray-700">
         <div className="text-center mb-8">
@@ -63,7 +63,7 @@ const Login = () => {
             Bitte melden Sie sich mit Ihren Zugangsdaten an.
           </p>
         </div>
-        
+
         <form onSubmit={formik.handleSubmit} className="space-y-6">
           {/* Email Input */}
           <div>
@@ -78,11 +78,10 @@ const Login = () => {
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
               placeholder="name@example.com"
-              className={`w-full px-4 py-3 rounded-lg bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                formik.touched.email && formik.errors.email
+              className={`w-full px-4 py-3 rounded-lg bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none ${formik.touched.email && formik.errors.email
                   ? "border-red-500"
                   : "border-gray-700"
-              }`}
+                }`}
             />
             {formik.touched.email && formik.errors.email && (
               <p className="text-red-400 text-sm mt-2">{formik.errors.email}</p>
@@ -103,11 +102,10 @@ const Login = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="********"
-                className={`w-full px-4 py-3 rounded-lg bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none ${
-                  formik.touched.password && formik.errors.password
+                className={`w-full px-4 py-3 rounded-lg bg-gray-800 text-gray-200 focus:ring-2 focus:ring-blue-500 focus:outline-none ${formik.touched.password && formik.errors.password
                     ? "border-red-500"
                     : "border-gray-700"
-                }`}
+                  }`}
               />
               <span
                 onClick={() => setShowPassword(!showPassword)}
@@ -130,9 +128,8 @@ const Login = () => {
             <button
               type="submit"
               disabled={isLoading}
-              className={`w-full px-6 py-3 text-lg font-bold rounded-lg bg-blue-600 hover:bg-blue-700 transition-all ${
-                isLoading ? "opacity-50 cursor-not-allowed" : ""
-              }`}
+              className={`w-full px-6 py-3 text-lg font-bold rounded-lg bg-blue-600 hover:bg-blue-700 transition-all ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                }`}
             >
               {isLoading ? "Lädt..." : "Anmelden"}
             </button>
@@ -141,14 +138,12 @@ const Login = () => {
 
         {/* Passwort vergessen */}
         <div className="text-center mt-6">
-        <Link to="/forgetPassword" className="block px-4 py-2 hover:bg-gray-700 rounded">
-          <button
-            className="text-sm text-blue-400 hover:underline"
-          >
-            Passwort vergessen?
-        
-          </button>
+          <Link to="/forgetPassword" className="block px-4 py-2 hover:bg-gray-700 rounded">
+            <button className="text-sm text-blue-400 hover:underline">
+              Passwort vergessen?
+            </button>
           </Link>
+
         </div>
       </div>
     </div>

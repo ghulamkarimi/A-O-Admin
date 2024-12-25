@@ -23,11 +23,13 @@ const App = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId") || "";
-  useEffect(() => {
+
+ useEffect(() => {
+  const path = window.location.pathname;
+  if (path !== "/forgetPassword") {
     const checkUserIsLogin = async () => {
       try {
         await dispatch(checkAccessTokenApi()).unwrap();
-
         if (userId) {
           dispatch(setUserId(userId));
         }
@@ -38,7 +40,9 @@ const App = () => {
       }
     };
     checkUserIsLogin();
-  }, [dispatch, navigate]);
+  }
+}, [dispatch, navigate, userId]);
+
 
   return (
     <div className="flex w-full">
@@ -62,9 +66,13 @@ const App = () => {
           <Route path="/create-car" element={<ProtectedRoute><CreateCarBuy /></ProtectedRoute>} />
           <Route path="/edit-car/:id" element={<ProtectedRoute><UpdateCarBuy /></ProtectedRoute>} />
           <Route path="/carRent" element={<ProtectedRoute><CarRent /></ProtectedRoute>} />
+
+                 {/* Öffentlich zugängliche Seiten */}
           <Route path="/forgetPassword" element={<PasswordResetPage />} />
           <Route path="/logout" element={<LogoutComponent />} />
           <Route path="/login" element={<Login />} />
+
+
         </Routes>
       </div>
     </div>
