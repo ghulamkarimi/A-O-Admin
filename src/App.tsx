@@ -14,13 +14,35 @@ import Appointment from "./pages/Appointment";
 import UserDetails from "./pages/UserDetails";
 import CreateCarBuy from "./pages/CreateCarBuy";
 import UpdateCarBuy from "./pages/UpdateCarBuy";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "./feuture/store";
+import { checkAccessTokenApi, setUserId } from "./feuture/reducers/userSlice";
 
 
 
 const App = () => {
 
+const dispatch = useDispatch<AppDispatch>()
 
 
+  useEffect(() => {
+    const checkUserIsLogin = async () => {
+      try {
+      await dispatch(checkAccessTokenApi()).unwrap();
+    
+        const userId = localStorage.getItem("userId")|| "";
+        if (userId) {
+          dispatch(setUserId(localStorage.getItem("userId")|| ""));
+      
+        }
+      } catch (error:any) {
+        localStorage.clear();
+        dispatch(setUserId(""));
+      }
+    };
+    checkUserIsLogin();
+  }, []);
 
   return (
     <Router>
@@ -29,6 +51,7 @@ const App = () => {
         <ResponsiveNavbar />
         <div className="flex-1 md:ml-52 p-8 mt-16 md:mt-0">
           <Routes>
+          <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
             <Route path="/offers" element={<ProtectedRoute><OfferList /></ProtectedRoute>} />
             <Route path="/appointment" element={<ProtectedRoute><Appointment /></ProtectedRoute>} />

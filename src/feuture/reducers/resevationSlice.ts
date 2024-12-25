@@ -61,7 +61,7 @@ const reservationSlice = createSlice({
             state.status = "loading";
         })
         builder.addCase(getReservationApi.fulfilled, (state, action) => {
-            console.log("API Response Payload:", action.payload);  // Überprüfe die Antwort
+           
             state.status = "succeeded";
 
             if (action.payload?.reservation) {
