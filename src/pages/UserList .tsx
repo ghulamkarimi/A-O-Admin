@@ -5,15 +5,17 @@ import { useState } from "react";
 
 const UserList = () => {
   const allusers = useSelector(displayUsers);
-  const users = allusers.filter((user) => user.isAdmin !== true);
+
+  const users = allusers.filter((user) => user?.isAdmin !== true);
+  
   const navigate = useNavigate();
 
   const [searchTerm, setSearchTerm] = useState("");
 
   // Filterfunktion basierend auf Suchbegriff
   const filteredUsers = users.filter((user) =>
-    user.customerNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    user?.customerNumber?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user?.email.toLowerCase().includes(searchTerm.toLowerCase())
   );
  
   return (

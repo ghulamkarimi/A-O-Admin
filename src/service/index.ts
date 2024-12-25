@@ -32,14 +32,9 @@ export const refreshToken = () => {
 
 export const checkAccessToken = () => {
     const url = `${API_URL}/user/check-token`;
-    const token = localStorage.getItem("accessToken");  // Token aus Local Storage holen
-
-    return axios.get(url, {
-        headers: {
-            Authorization: `Bearer ${token}`,  // Token im Header mitsenden
-        }
-    });
-};
+    return axios.get(url);
+  };
+  
 
 export const deleteAccount = (targetUserId:string) => {
     const url = `${API_URL}/user/deleteAccount/${targetUserId}`;

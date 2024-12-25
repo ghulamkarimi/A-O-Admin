@@ -25,12 +25,9 @@ const UserDetails = () => {
     const fetchData = async () => {
       setLoading(true);
       await dispatch(getReservationApi());
-
-      // Filter reservations based on userId
-      const rentalAppointment = userReservations.filter(
-        (reservation) => reservation.user?._id?.toString() === userId?.toString()
+      const rentalAppointment = userReservations?.filter(
+        (reservation) => reservation?.user?._id?.toString() === userId?.toString()
       );
-
       setFilteredReservations(rentalAppointment);
       setLoading(false);
     };
@@ -40,7 +37,7 @@ const UserDetails = () => {
     }
   }, [dispatch, userReservations, userId]);
 
-  const user = users.find((u) => u._id === userId); // Finde den Benutzer anhand der ID
+  const user = users.find((u) => u?._id === userId); // Finde den Benutzer anhand der ID
   if (!user) {
     return <div>Benutzer nicht gefunden</div>;
   }
@@ -124,18 +121,18 @@ const UserDetails = () => {
         {workshopAppointments.length > 0 ? (
           <ul className="bg-white p-6 rounded-md shadow-md">
             {workshopAppointments.map((appointment) => (
-              <li key={appointment._id} className="mb-4 border-b pb-4">
+              <li key={appointment?._id} className="mb-4 border-b pb-4">
                 <p>
-                  <strong>Datum:</strong> {new Date(appointment.date).toLocaleDateString()}
+                  <strong>Datum:</strong> {new Date(appointment?.date).toLocaleDateString()}
                 </p>
                 <p>
-                  <strong>Zeit:</strong> {appointment.time}
+                  <strong>Zeit:</strong> {appointment?.time}
                 </p>
                 <p>
-                  <strong>Service:</strong> {appointment.service || "N/A"}
+                  <strong>Service:</strong> {appointment?.service || "N/A"}
                 </p>
                 <p>
-                  <strong>Kennzeichen:</strong> {appointment.licensePlate || "N/A"}
+                  <strong>Kennzeichen:</strong> {appointment?.licensePlate || "N/A"}
                 </p>
               </li>
             ))}
@@ -159,17 +156,17 @@ const UserDetails = () => {
             <div className="max-w-2xl mx-auto space-y-10">
               {filteredReservations.map((reservation) => (
                 <div
-                  key={reservation._id}
+                  key={reservation?._id}
                   className="border border-gray-200 rounded-lg shadow-lg overflow-hidden bg-white"
                 >
                   <img
                     className="w-full h-72 object-cover"
-                    src={reservation.carRent.carImage}
-                    alt={reservation.carRent.carName}
+                    src={reservation?.carRent.carImage}
+                    alt={reservation?.carRent.carName}
                   />
                   <div className="p-6 space-y-6">
                     <h3 className="text-3xl font-semibold text-gray-900">
-                      {reservation.carRent.carName}
+                      {reservation?.carRent?.carName}
                     </h3>
                     <div className="text-lg space-y-4">
                       <p>
@@ -179,25 +176,25 @@ const UserDetails = () => {
                       <p>
                         <strong>Abholdatum:</strong>{" "}
                         <span className="text-gray-700">
-                          <FormattedDate date={reservation.pickupDate || ""} />
+                          <FormattedDate date={reservation?.pickupDate || ""} />
                         </span>
                       </p>
                       <p>
                         <strong>Rückgabedatum:</strong>{" "}
                         <span className="text-gray-700">
-                          <FormattedDate date={reservation.returnDate || ""} />
+                          <FormattedDate date={reservation?.returnDate || ""} />
                         </span>
                       </p>
                       <p>
                         <strong>Rückgabezeit:</strong>{" "}
-                        <span className="text-gray-700">{reservation.returnTime}</span>
+                        <span className="text-gray-700">{reservation?.returnTime}</span>
                       </p>
                       <div>
                         <strong>Zahlungsstatus:</strong>{" "}
                         <select
                           className="ml-4 px-2 py-1 rounded-md border"
                           value={reservation.paymentStatus}
-                          onChange={(e) => handleStatusChange(e, reservation._id)}
+                          onChange={(e) => handleStatusChange(e, reservation?._id)}
                         >
                           <option value="pending">Ausstehend</option>
                           <option value="completed">Abgeschlossen</option>
