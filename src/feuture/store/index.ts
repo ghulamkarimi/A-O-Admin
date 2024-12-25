@@ -6,6 +6,7 @@ import {  refreshToken } from "../../service";
 import carBuyReducer, { fetchCarBuys } from "../reducers/carBuySlice";
 import axiosJWT from "../../service/axiosJwt";
 import reservationSlice, { getReservationApi } from "../reducers/resevationSlice"
+import rentSlice, { getCarRentsApi } from "../reducers/rentSlice";
 
 
 export const store = configureStore({
@@ -14,7 +15,8 @@ export const store = configureStore({
       users: userReducer,
       carBuys: carBuyReducer,
       appointment: appointmentReducer,
-      reservation: reservationSlice
+      reservation: reservationSlice,
+      rent: rentSlice
   },
   middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
@@ -45,6 +47,7 @@ Promise.all([
   store.dispatch(fetchOffers()),
   store.dispatch(fetchAppointments()),
   store.dispatch(getReservationApi()),
+  store.dispatch(getCarRentsApi()),
   store.dispatch(checkAccessTokenApi())
 ])
   .then(() => {

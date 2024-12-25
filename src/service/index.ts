@@ -14,7 +14,6 @@ export const userRegister = (user: TUser) => {
     return axios.post(url, user);
 }
 
-
 export const getAllUsers = () => {
     const url = `${API_URL}/user/allUsers`;
     return axios.get(url);
@@ -40,7 +39,6 @@ export const deleteAccount = (targetUserId:string) => {
     const url = `${API_URL}/user/deleteAccount/${targetUserId}`;
     return axiosJWT.delete(url);
 }
-
 
 export const requestPasswordReset = (email: string) => {
     const url = `${API_URL}/user/requestPasswordReset`;
@@ -73,14 +71,13 @@ export const createOffer = async (formData: FormData) => {
     const url = `${API_URL}/offer/createOffer`;
     return axios.post(url, formData, { withCredentials: true });
 }
-// serviceAPI.ts
+
 export const deleteOffer = async (userId: string, offerId: string) => {
     const url = `${API_URL}/offer/deleteOffer/`;
     return axios.delete(url, {
         data: { userId, offerId },
     });
 };
-
 
 export const editOffer = async (formData: FormData) => {
     const url = `${API_URL}/offer/editOffer`;
@@ -148,7 +145,7 @@ export const deleteCarBuy = async (userId: string, carId: string) => {
     });
 };
 
-
+// reservation
 
 export const getReservation = () => {
     const url = `${API_URL}/reservation/get-reservation`
@@ -171,4 +168,11 @@ export const updateStatusReservation = (reservation: TReservation) => {
       userId: reservation.userId,
     });
   };
+
+  // carRent
+
+  export const getCarRents = () => {
+    const url = `${API_URL}/rent/getRents`;
+    return axios.get(url);
+  }
   
