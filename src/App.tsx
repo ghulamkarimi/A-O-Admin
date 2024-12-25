@@ -1,4 +1,4 @@
-import {   Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate } from "react-router-dom";
 import CustomSidebar from "./components/nav/Seidbar";
 import ResponsiveNavbar from "./components/nav/ResponsiveNavbar";
 import HomePage from "./pages/HomePage";
@@ -22,12 +22,12 @@ import { checkAccessTokenApi, setUserId } from "./feuture/reducers/userSlice";
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
-
+  const userId = localStorage.getItem("userId") || "";
   useEffect(() => {
     const checkUserIsLogin = async () => {
       try {
         await dispatch(checkAccessTokenApi()).unwrap();
-        const userId = localStorage.getItem("userId") || "";
+
         if (userId) {
           dispatch(setUserId(userId));
         }
@@ -41,10 +41,16 @@ const App = () => {
   }, [dispatch, navigate]);
 
   return (
-    <div className="flex">
-      <CustomSidebar />
-      <ResponsiveNavbar />
-      <div className="flex-1 md:ml-52 p-8 mt-16 md:mt-0">
+    <div className="flex w-full">
+      <div className={`${userId ? "block" : "hidden"} `}>
+        <CustomSidebar />
+      </div>
+
+      <div className={`${userId ? "block" : "hidden"} `}>
+        <ResponsiveNavbar />
+      </div>
+
+      <div className={`${userId ? "md:ml-52 flex-1 p-8 mt-16 md:mt-0 " : "flex-1 "}`}>
         <Routes>
           <Route path="/" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />
           <Route path="/home" element={<ProtectedRoute><HomePage /></ProtectedRoute>} />

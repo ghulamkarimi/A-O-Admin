@@ -73,7 +73,7 @@ const CustomSidebar = () => {
                         </Link>
                     </li>
 
-                    <li>
+                    {/* <li>
                         <Link
                             to="/forgetPassword"
                             className={`block px-4 py-2 rounded hover:bg-gray-700 ${location.pathname === "/cars" ? "bg-gray-700" : ""
@@ -81,7 +81,7 @@ const CustomSidebar = () => {
                         >
                             Passwort vergessen
                         </Link>
-                    </li>
+                    </li> */}
 
                     <li>
                         <Link

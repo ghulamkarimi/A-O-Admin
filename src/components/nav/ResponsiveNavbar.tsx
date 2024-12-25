@@ -51,11 +51,11 @@ const ResponsiveNavbar = () => {
                                 Fahrzeuge verkaufen
                             </Link>
                         </li> 
-                        <li>
+                        {/* <li>
                             <Link to="/forgetPassword" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
                                 Passwort vergessen
                             </Link>
-                        </li>
+                        </li> */}
                         <li>
                             <Link 
                             

@@ -1,4 +1,4 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IoEyeSharp, IoEyeOffSharp } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../feuture/store/index";
@@ -53,7 +53,8 @@ const Login = () => {
 
   return (
     <div
-    className="flex items-center justify-center min-h-screen bg-gradient-to-br from-gray-500 via-gray-800 to-black rounded-lg"
+    className={`flex w-full items-center border-2 justify-center min-h-screen  rounded-lg bg-[url('/ölwechsel.jpeg')] bg-cover bg-center`}
+   
     >
       <div className="bg-gray-900 text-white rounded-xl shadow-xl p-10 max-w-md w-full border border-gray-700">
         <div className="text-center mb-8">
@@ -140,12 +141,14 @@ const Login = () => {
 
         {/* Passwort vergessen */}
         <div className="text-center mt-6">
+        <Link to="/forgetPassword" className="block px-4 py-2 hover:bg-gray-700 rounded">
           <button
-            onClick={() => navigate("/forgetPassword")}
             className="text-sm text-blue-400 hover:underline"
           >
             Passwort vergessen?
+        
           </button>
+          </Link>
         </div>
       </div>
     </div>
