@@ -175,4 +175,9 @@ export const updateStatusReservation = (reservation: TReservation) => {
     const url = `${API_URL}/rent/getRents`;
     return axios.get(url);
   }
+
+  export const createCarRent = async (FormData: FormData) => {
+    const url = `${API_URL}/rent/create`;
+    return axios.post(url, FormData, { withCredentials: true });
+  }
   

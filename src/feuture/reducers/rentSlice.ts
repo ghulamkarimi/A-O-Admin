@@ -1,6 +1,6 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
 import { ICarRent } from "../../interface";
-import { getCarRents } from "../../service";
+import { createCarRent, getCarRents } from "../../service";
 import { RootState } from "../store";
 
 interface RentState {
@@ -28,6 +28,16 @@ export const getCarRentsApi = createAsyncThunk("/rent/getCarRentsApi", async () 
     }
 })
 
+export const createCarRentApi = createAsyncThunk("/rent/createCarRentApi", async (formData: FormData, { rejectWithValue }) => {
+    try {
+        const response = await createCarRent(formData);
+        return response.data;
+    } catch (error: any) {
+        return rejectWithValue(error?.response?.data?.message || "Error creating rent");
+
+    }
+})
+
 
 const rentSlice = createSlice({
     name: 'rent',
@@ -39,14 +49,17 @@ const rentSlice = createSlice({
         builder.addCase(getCarRentsApi.pending, (state) => {
             state.status = 'loading';
         })
-        .addCase(getCarRentsApi.fulfilled, (state, action) => {
-            state.status = 'succeeded';
-            rentAdapter.setAll(state, action.payload);
-        })
-        .addCase(getCarRentsApi.rejected, (state, action) => {
-            state.status = 'failed';
-            state.error = action.error.message || null;
-        })
+            .addCase(getCarRentsApi.fulfilled, (state, action) => {
+                state.status = 'succeeded';
+                rentAdapter.setAll(state, action.payload);
+            })
+            .addCase(getCarRentsApi.rejected, (state, action) => {
+                state.status = 'failed';
+                state.error = action.error.message || null;
+            })
+            .addCase(createCarRentApi.fulfilled, (state, action) => {
+                rentAdapter.addOne(state, action.payload);
+            })
     }
 })
 
