@@ -1,5 +1,5 @@
 
-import{ useState } from "react";
+import { useState } from "react";
 import { IoEyeSharp, IoReturnDownBack, IoEyeOffSharp } from "react-icons/io5";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../feuture/store/index";
@@ -39,10 +39,15 @@ const Login = () => {
       try {
         setIsLoading(true);
         const response = await dispatch(userLoginApi(values)).unwrap();
+        if (!response.userInfo.isAdmin ) {
+          NotificationService.error("Nur für Admin zugänglich.");
+          localStorage.clear();
+          return
+        }
         NotificationService.success(response.message || "Login erfolgreich!");
         setTimeout(() => {
           navigate("/");
-        }, 4000);
+        }, 3000);
         dispatch(setUserInfo(response.userInfo));
       } catch (error: any) {
         NotificationService.error(error.message || "Login fehlgeschlagen.");
@@ -80,11 +85,10 @@ const Login = () => {
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 placeholder="E-Mail-Adresse"
-                className={`mt-2 block w-full px-4 py-3 border rounded-lg shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                  formik.touched.email && formik.errors.email
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
+                className={`mt-2 block w-full px-4 py-3 border rounded-lg shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 transition-all ${formik.touched.email && formik.errors.email
+                  ? "border-red-500"
+                  : "border-gray-300"
+                  }`}
               />
               <div className="h-5">
                 {formik.touched.email && formik.errors.email && (
@@ -106,11 +110,10 @@ const Login = () => {
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
                   placeholder="Passwort"
-                  className={`block w-full px-4 py-3 border rounded-lg shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 transition-all ${
-                    formik.touched.password && formik.errors.password
-                      ? "border-red-500"
-                      : "border-gray-300"
-                  }`}
+                  className={`block w-full px-4 py-3 border rounded-lg shadow-sm text-gray-900 focus:ring-blue-500 focus:border-blue-500 transition-all ${formik.touched.password && formik.errors.password
+                    ? "border-red-500"
+                    : "border-gray-300"
+                    }`}
                 />
                 <span
                   onClick={() => setShowPassword(!showPassword)}
@@ -134,9 +137,8 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className={`px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all ${
-                  isLoading ? "opacity-50 cursor-not-allowed" : ""
-                }`}
+                className={`px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-all ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                  }`}
               >
                 {isLoading ? "Lädt..." : "Login"}
               </button>

@@ -115,13 +115,11 @@ const CarDetails: React.FC = () => {
             <input
               type="text"
               name="carTitle"
-         
               placeholder="Titel des Fahrzeugs"
               className="p-2 border rounded-md"
             />
             <select
               name="carCategory"
-         
               className="p-2 border rounded-md"
             >
               <option value="">Kategorie wählen</option>
@@ -132,7 +130,6 @@ const CarDetails: React.FC = () => {
             <input
               type="text"
               name="carPrice"
-           
               placeholder="Preis"
               className="p-2 border rounded-md"
             />

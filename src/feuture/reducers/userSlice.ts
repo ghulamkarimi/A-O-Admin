@@ -58,7 +58,7 @@ export const userLoginApi = createAsyncThunk(
       console.log("users/userLoginApi", response.data);
       localStorage.setItem("userId", response.data.userInfo.userId);
       localStorage.setItem("exp", response.data.userInfo.exp.toString());
-
+      localStorage.setItem("userAdmin", response.data.userInfo.isAdmin.toString());
       return response.data;
     } catch (error: any) {
       return error?.response?.data?.message || "Error in user login";

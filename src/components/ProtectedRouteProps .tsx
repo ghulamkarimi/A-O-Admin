@@ -7,9 +7,10 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   // Hier verwendest du localStorage, um den User-Status zu prüfen.
-  const isAuthenticated = !!localStorage.getItem('userId'); // Gibt `true` zurück, wenn `userId` existiert
-
-  if (!isAuthenticated) {
+  const isAuthenticated = !!localStorage.getItem('userId'); 
+  const isAdmin = localStorage.getItem('userAdmin') === 'true';
+  
+  if (!isAuthenticated || !isAdmin) {
     return <Navigate to="/login" replace />;
   }
 

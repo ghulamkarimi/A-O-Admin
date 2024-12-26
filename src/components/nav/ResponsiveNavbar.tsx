@@ -1,13 +1,19 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { HiMenu } from "react-icons/hi"; // Installiere react-icons mit "npm install react-icons"
+import { HiMenu } from "react-icons/hi";
+import { IoIosArrowDropdownCircle } from "react-icons/io";  // Dropdown Icon
 
 const ResponsiveNavbar = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const userId = localStorage.getItem("userId");
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);  // Zustand für Dropdown
+    const userId = localStorage.getItem("userAdmin") === "true";
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
+    };
+
+    const toggleDropdown = () => {
+        setIsDropdownOpen(!isDropdownOpen);
     };
 
     return (
@@ -18,6 +24,7 @@ const ResponsiveNavbar = () => {
                     <HiMenu />
                 </button>
             </div>
+
             {isOpen && (
                 <nav className="mt-4">
                     <ul className="space-y-4">
@@ -41,26 +48,59 @@ const ResponsiveNavbar = () => {
                                 Benutzer
                             </Link>
                         </li>
+
+                        {/* Dropdown für Fahrzeuge vermieten */}
                         <li>
-                            <Link to="/carRent" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
-                                Fahrzeuge vermieten
-                            </Link>
+                            <div
+                                onClick={toggleDropdown}
+                                className="flex items-center justify-between px-4 py-2 rounded hover:bg-gray-700 cursor-pointer"
+                            >
+                                <span>Fahrzeuge vermieten</span>
+                                <IoIosArrowDropdownCircle
+                                    className={`text-xl transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}
+                                />
+                            </div>
+                            {isDropdownOpen && (
+                                <ul className="ml-5 space-y-2 mt-2">
+                                    <li>
+                                        <Link
+                                            to="/carRentsList"
+                                            onClick={() => {
+                                                setIsOpen(false);
+                                                setIsDropdownOpen(false);
+                                            }}
+                                            className={`block px-4 py-2 rounded hover:bg-yellow-500 ${location.pathname === "/carRentsList" ? "bg-orange-500" : ""}`}
+                                        >
+                                            Autoliste
+                                        </Link>
+                                    </li>
+                                    <li>
+                                        <Link
+                                            to="/createCarRent"
+                                            onClick={() => {
+                                                setIsOpen(false);
+                                                setIsDropdownOpen(false);
+                                            }}
+                                            className={`block px-4 py-2 rounded hover:bg-yellow-500 ${location.pathname === "/createCarRent" ? "bg-orange-500" : ""}`}
+                                        >
+                                            Auto hinzufügen
+                                        </Link>
+                                    </li>
+                                </ul>
+                            )}
                         </li>
+
                         <li>
                             <Link to="/carBuy" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
                                 Fahrzeuge verkaufen
                             </Link>
-                        </li> 
-                        {/* <li>
-                            <Link to="/forgetPassword" onClick={() => setIsOpen(false)} className="block px-4 py-2 hover:bg-gray-700 rounded">
-                                Passwort vergessen
-                            </Link>
-                        </li> */}
+                        </li>
+
                         <li>
-                            <Link 
-                            
-                            to="/login" onClick={() => setIsOpen(false)} 
-                            className={` px-4 py-2 hover:bg-gray-700 rounded ${userId ? "hidden" : "block"}`}	
+                            <Link
+                                to="/login"
+                                onClick={() => setIsOpen(false)}
+                                className={`block px-4 py-2 hover:bg-gray-700 rounded ${userId ? "hidden" : "block"}`}
                             >
                                 Login
                             </Link>
