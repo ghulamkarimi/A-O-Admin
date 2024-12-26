@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { useState } from "react";
-import { createCarRentApi } from "../../feuture/reducers/rentSlice";
+import { createCarRentApi, getCarRentsApi } from "../../feuture/reducers/rentSlice";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../../feuture/store";
 import { NotificationService } from "../../service/NotificationService";
@@ -56,7 +56,7 @@ const CreateCarRent = () => {
                     formData.append("userId", values.userId);
                 }
                 const response = await dispatch(createCarRentApi(formData)).unwrap();
-                console.log("response:",response);
+                dispatch(getCarRentsApi());
                 NotificationService.success(response.message || "Auto erfolgreich hinzugefügt");
                 formik.resetForm();
                 setImagePreview(null);

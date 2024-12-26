@@ -55,7 +55,7 @@ const CarRents = () => {
                                             📅 Gebuchte Zeiten
                                         </h3>
 
-                                        {car.bookedSlots.length > 0 ? (
+                                        {car.bookedSlots && car.bookedSlots.length > 0 ? (
                                             <div className="space-y-4">
                                                 {car.bookedSlots.map((slot, index) => {
                                                     const start = new Date(slot.start);
