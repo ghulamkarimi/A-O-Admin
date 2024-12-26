@@ -20,7 +20,7 @@ const CreateCarRent = () => {
         carImage: Yup.mixed()
     .required("Bitte geben Sie ein Bild ein")
     .test("fileType", "Nur JPEG, PNG oder JPG Bilder sind erlaubt", (value) => {
-        return value instanceof File && ["image/jpeg", "image/png", "image/jpg"].includes(value.type);
+        return value instanceof File && ["image/jpeg", "image/png", "image/jpg" , "image/webp"].includes(value.type);
     })
     .test("fileSize", "Die Bilddatei ist zu groß. Maximale Größe: 5 MB.", (value) => {
         return value instanceof File && value.size <= 5 * 1024 * 1024;
@@ -69,7 +69,7 @@ const CreateCarRent = () => {
  
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
-        const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+        const allowedTypes = ["image/jpeg", "image/png", "image/jpg" , "image/webp"];
         const maxSize = 5 * 1024 * 1024; // 5 MB
     
         if (file) {
