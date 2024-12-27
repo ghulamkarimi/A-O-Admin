@@ -29,7 +29,7 @@ const CreateCarBuy = () => {
     carHorsePower: "",
     carEuroNorm: "",
     carFirstRegistrationDay: new Date().toISOString().split("T")[0],
-    carTechnicalInspection: new Date().toISOString().split("T")[0],
+    carTechnicalInspection: new Date(),
     carImages: [] as File[],
     carAirConditioning: false,
     carNavigation: false,

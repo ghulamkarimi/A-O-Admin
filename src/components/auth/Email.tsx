@@ -13,7 +13,7 @@ interface EmailFormProps {
   className?: string;
 }
 
-const EmailForm: React.FC<EmailFormProps> = ({ onNextStep, setEmail,className }) => {
+const EmailForm: React.FC<EmailFormProps> = ({ onNextStep, setEmail }) => {
   const dispatch = useDispatch<AppDispatch>();
 
   const formik = useFormik({
