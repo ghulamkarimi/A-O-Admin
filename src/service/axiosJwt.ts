@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosJWT = axios.create({
-  baseURL: "http://localhost:7001",
+  baseURL: "https://car-db.aundoautoservice.de ",
   withCredentials: true,
 });
 axiosJWT.interceptors.request.use;
