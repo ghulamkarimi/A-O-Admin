@@ -1,15 +1,15 @@
 {
-  "name": "adminpanel",
+"name": "admin-panel", 
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite", 
+    "dev": "vite",
     "build": "tsc -b && vite build",  
     "lint": "eslint .",  
     "preview": "vite preview",  
-    "setup": "npm i && npm run build && pm2 start --name adminpanel npm -- start --update-env --time && pm2 save", 
-    "deploy": "git pull --no-rebase && npm i && npm run build && pm2 restart adminpanel --update-env --time && pm2 save", 
+    "setup": "npm i && npm run build && pm2 start --name admin-panel npm -- start --update-env --time && pm2 save", 
+    "deploy": "git pull --no-rebase && npm i && npm run build && pm2 restart admin-panel --update-env --time && pm2 save", 
     "cp": "node cli/cp.mjs"
   },
   "dependencies": {
