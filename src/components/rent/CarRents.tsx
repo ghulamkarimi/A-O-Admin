@@ -2,12 +2,13 @@ import { useDispatch, useSelector } from "react-redux";
 import { displayRents, deleteCarRentApi } from "../../feuture/reducers/rentSlice";
 import { AppDispatch } from "../../feuture/store";
 import { NotificationService } from "../../service/NotificationService";
+import { useNavigate } from "react-router-dom";
 
 const CarRents = () => {
     const cars = useSelector(displayRents);
     const userId = localStorage.getItem("userId");
     const dispatch = useDispatch<AppDispatch>();
-
+    const navigate=useNavigate()
 
     const handleDelete = async (carId: string) => {
         if (!userId) {
@@ -123,11 +124,19 @@ const CarRents = () => {
                                             Buchen
                                         </button>
                                         <button
+                                           onClick={() => navigate(`/editCarRent/${car._id}`)} 
+                                            className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-3 rounded-lg transition-all"
+                                        >
+                                            Bearbeiten
+                                        </button>
+                                        <button
                                             onClick={() => handleDelete(car._id ?? '')}
                                             className="bg-red-500 hover:bg-red-600 text-white px-5 py-3 rounded-lg transition-all"
                                         >
                                             Löschen
                                         </button>
+
+
 
                                     </div>
                                 </div>

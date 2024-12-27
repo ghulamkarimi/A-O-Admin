@@ -19,7 +19,8 @@ import { useDispatch } from "react-redux";
 import { AppDispatch } from "./feuture/store";
 import { checkAccessTokenApi, setUserId } from "./feuture/reducers/userSlice";
 import CarRentsList from "./pages/CarRentsList";
-import CreateCarRents from "./pages/CreateCarrents";
+import CreateCarRents from "./pages/CreateCarRents";
+import CarRentManagement from "./pages/CarRentManagement";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -74,6 +75,7 @@ const App = () => {
           <Route path="/edit-car/:id" element={<ProtectedRoute><UpdateCarBuy /></ProtectedRoute>} />
           <Route path="/carRentsList" element={<ProtectedRoute><CarRentsList /></ProtectedRoute>} />
           <Route path="/createCarRent" element={<ProtectedRoute><CreateCarRents /></ProtectedRoute>} />
+          <Route path="/editCarRent/:id" element={<ProtectedRoute><CarRentManagement /></ProtectedRoute>} />
 
           {/* Öffentlich zugängliche Seiten */}
           <Route path="/forgetPassword" element={<PasswordResetPage />} />

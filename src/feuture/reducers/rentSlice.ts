@@ -1,6 +1,6 @@
 import { createAsyncThunk, createEntityAdapter, createSlice, EntityState } from "@reduxjs/toolkit";
 import { ICarRent, TCarRent } from "../../interface";
-import { createCarRent, deleteCarRent, editCarRent, getCarRents } from "../../service";
+import { createCarRent, deleteCarRent,getCarRents, updateCarRent } from "../../service";
 import { RootState } from "../store";
 
 interface RentState {
@@ -71,7 +71,7 @@ export const updateCarRentApi = createAsyncThunk("/rent/updateCarRentApi",
             } else {
                 formData.append("carImage", rent.carImage || "")
             }
-            const updateRent = await editCarRent(formData)
+            const updateRent = await updateCarRent(formData)
 
             return updateRent.data
         } catch (error: any) {
@@ -79,7 +79,6 @@ export const updateCarRentApi = createAsyncThunk("/rent/updateCarRentApi",
 
         }
     })
-
 
 
 const rentSlice = createSlice({
@@ -106,15 +105,13 @@ const rentSlice = createSlice({
             .addCase(deleteCarRentApi.fulfilled, (state, action) => {
                 rentAdapter.removeOne(state, action.meta.arg.carId);
             })
-            .addCase(updateCarRentApi.fulfilled, (stata, action) => {
+            .addCase(updateCarRentApi.fulfilled, (state, action) => {
                 const { _id, changes } = action.payload;
-                const existingRent = rentAdapter.getSelectors().selectById(stata, _id);
+                const existingRent = rentAdapter.getSelectors().selectById(state, _id);
                 if (existingRent) {
                     Object.assign(existingRent, changes);
                 }
-            }
-
-            )
+            })
     }
 })
 

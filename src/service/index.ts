@@ -186,8 +186,23 @@ export const updateStatusReservation = (reservation: TReservation) => {
     return axios.delete(url, { data: { userId, carId } })
   }
 
-  export const editCarRent = async (FormData: FormData) => {
+  export const updateCarRent = async (FormData: FormData) => {
     const url = `${API_URL}/rent/updateRentCar`;
-    return axios.put(url, FormData);
+    try {
+        console.log("Sending FormData to:", url);
+        FormData.forEach((value, key) => {
+            console.log(`${key}: ${value}`);
+        });
+        const response = await axios.put(url, FormData, { withCredentials: true });
+        return response.data;
+    } catch (error) {
+        if (axios.isAxiosError(error)) {
+            console.error("Axios Error:", error.response?.data);
+            throw new Error(error.response?.data?.message || 'Fehler beim Bearbeiten des Angebots');
+        } else {
+            console.error("General Error:", error);
+            throw new Error('Fehler beim Bearbeiten des Angebots');
+        }
+    }
   }
   
