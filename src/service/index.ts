@@ -180,4 +180,14 @@ export const updateStatusReservation = (reservation: TReservation) => {
     const url = `${API_URL}/rent/create`;
     return axios.post(url, FormData, { withCredentials: true });
   }
+
+  export const deleteCarRent = async (userId: string, carId: string) => {
+    const url = `${API_URL}/rent/deleteRentCar`
+    return axios.delete(url, { data: { userId, carId } })
+  }
+
+  export const editCarRent = async (FormData: FormData) => {
+    const url = `${API_URL}/rent/updateRentCar`;
+    return axios.put(url, FormData);
+  }
   

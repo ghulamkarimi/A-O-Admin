@@ -1,9 +1,27 @@
-import { useSelector } from "react-redux";
-import { displayRents } from "../../feuture/reducers/rentSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { displayRents, deleteCarRentApi } from "../../feuture/reducers/rentSlice";
+import { AppDispatch } from "../../feuture/store";
+import { NotificationService } from "../../service/NotificationService";
 
 const CarRents = () => {
     const cars = useSelector(displayRents);
-    console.log(cars);
+    const userId = localStorage.getItem("userId");
+    const dispatch = useDispatch<AppDispatch>();
+
+
+    const handleDelete = async (carId: string) => {
+        if (!userId) {
+            NotificationService.error("Benutzer nicht angemeldet.");
+            return;
+        }
+        try {
+            await dispatch(deleteCarRentApi({ userId, carId })).unwrap();
+            NotificationService.success("Auto erfolgreich gelöscht!");
+        } catch (error) {
+            NotificationService.error((error as Error).message || "Fehler beim Löschen des Autos.");
+        }
+    };
+
 
     return (
         <div className="container mx-auto px-4 py-10">
@@ -61,6 +79,8 @@ const CarRents = () => {
                                                     const start = new Date(slot.start);
                                                     const end = new Date(slot.end);
                                                     const duration = Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24));
+                                                    const formattedStart = start.toISOString().slice(0, 16).replace('T', ', ');
+                                                    const formattedEnd = end.toISOString().slice(0, 16).replace('T', ', ');
 
                                                     return (
                                                         <div
@@ -73,10 +93,10 @@ const CarRents = () => {
                                                                 </div>
                                                                 <div>
                                                                     <p className="text-lg font-medium">
-                                                                        <span className="text-gray-600">Start:</span> {start.toLocaleString()}
+                                                                        <span className="text-gray-600">Start:</span> {formattedStart}
                                                                     </p>
                                                                     <p className="text-lg font-medium">
-                                                                        <span className="text-gray-600">Ende:</span> {end.toLocaleString()}
+                                                                        <span className="text-gray-600">Ende:</span> {formattedEnd}
                                                                     </p>
                                                                 </div>
                                                             </div>
@@ -93,6 +113,7 @@ const CarRents = () => {
                                                 ✅ Keine Buchungen vorhanden.
                                             </p>
                                         )}
+
                                     </div>
                                     <div className="flex justify-between items-center mt-6">
 
@@ -101,6 +122,13 @@ const CarRents = () => {
                                         >
                                             Buchen
                                         </button>
+                                        <button
+                                            onClick={() => handleDelete(car._id ?? '')}
+                                            className="bg-red-500 hover:bg-red-600 text-white px-5 py-3 rounded-lg transition-all"
+                                        >
+                                            Löschen
+                                        </button>
+
                                     </div>
                                 </div>
                             </div>
