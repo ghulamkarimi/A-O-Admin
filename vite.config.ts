@@ -4,7 +4,10 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   plugins: [react()],
   server: {
-    hmr: false, // Deaktiviert Hot Module Replacement (HMR)
+    hmr: false,
+     fs:{
+      strict: true
+     }
   }
 })
 
