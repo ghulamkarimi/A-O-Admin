@@ -7,10 +7,7 @@ import { useFormik } from "formik";
 import { NotificationService } from "../service/NotificationService";
 import { setUserInfo, userLoginApi } from "../feuture/reducers/userSlice";
 import { useState } from "react";
-import axios from 'axios';
-
-
-axios.defaults.withCredentials = true;
+ 
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
