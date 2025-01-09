@@ -56,9 +56,9 @@ export const userLoginApi = createAsyncThunk(
   async (initialUser: TUser) => {
     try {
       const response = await userLogin(initialUser);
-      localStorage.setItem("userId", response.data.user.userId);
-      localStorage.setItem("exp", response.data.userInfo.exp);
-      localStorage.setItem("userAdmin", response.data.user.isAdmin);
+      localStorage.setItem("userId", response.data.userInfo.userId);
+      localStorage.setItem("exp", response.data.userInfo.exp.toString());
+      localStorage.setItem("userAdmin", response.data.user.isAdmin.toString());
       console.log("response userslice", response);
       return response.data;
     } catch (error:any) {

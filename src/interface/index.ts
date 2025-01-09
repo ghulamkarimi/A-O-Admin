@@ -19,31 +19,34 @@ export interface IUser {
     firstName: string;
     lastName: string;
     email: string;
-    password: string;
-    confirmPassword: string;
+    password?: string;
+    confirmPassword?: string;
     isAdmin: boolean;
-    phone: string;
+    phone?: string;
     profile_photo: string;
-    token: string | null;
-    accessToken: string | null;
-    refreshToken: string | null;
-    verificationCode: string;
+    token?: string | null;
+    accessToken?: string | null;
+    refreshToken?: string | null;
+    verificationCode?: string;
     isAccountVerified: boolean;
-    createdAt: string;
-    customerNumber: string;
-
-}
-export interface IUserInfo {
-    userId: string;
-    firstName: string;
-    lastName: string;
-    profile_photo: string;
-    email: string;
-    isAdmin: boolean;
-    isAccountVerified?: boolean;
-    exp: number;
-    iat: number;
-}
+    customerNumber?: string;
+  }
+  
+  
+  
+  export interface IUserInfo {
+      userId: string;
+      firstName: string;
+      lastName: string;
+      profile_photo: string;
+      email: string;
+      isAdmin: boolean;
+      isAccountVerified?: boolean;
+      customerNumber?: string;
+      exp: number;
+      iat: number;
+  
+  }
 export type TUser = Partial<IUser>;
 
 export interface IChangePassword {
