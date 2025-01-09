@@ -19,6 +19,7 @@ import { RootState } from "../store";
 import { IUser, IUserInfo, TUser } from "../../interface";
 import { IChangePassword } from "../../interface";
 import { changePasswordWithEmail } from "../../service/index";
+import axios, { AxiosError } from "axios";
 
 interface IUserState {
   status: "idle" | "loading" | "succeeded" | "failed";
@@ -50,27 +51,22 @@ export const userRegisterApi = createAsyncThunk(
 
 // Removed duplicate checkAccessTokenApi declaration
 export const userLoginApi = createAsyncThunk(
-  "users/userLoginApi",
-  async (initialUser: TUser) => {
+  'users/userLoginApi',
+  async (initialUser: TUser, { rejectWithValue }) => {
     try {
       const response = await userLogin(initialUser);
-      console.log("users/userLoginApi", response.data);
-
-      // Stellen Sie sicher, dass die Antwort die richtigen Daten enthält
-      if (response.data && response.data.userInfo) {
-        localStorage.setItem("userId", response.data.userInfo.userId);
-        localStorage.setItem("exp", response.data.userInfo.exp.toString());
-        localStorage.setItem("userAdmin", response.data.userInfo.isAdmin.toString());
-        return response.data;
-      } else {
-        throw new Error("User info missing in response");
-      }
-    } catch (error: any) {
-      console.error("Error during user login", error);
-      return error?.response?.data?.message || "Error in user login";
+      localStorage.setItem("userId", response.data.userInfo.userId);
+      localStorage.setItem("exp", response.data.userInfo.exp.toString());
+      localStorage.setItem("userAdmin", response.data.userInfo.isAdmin.toString());
+      return response.data;
+    } catch (error) {
+      const axiosError = error as AxiosError<{ message?: string }>; 
+      console.error("Error during login:", axiosError);
+      return rejectWithValue(axiosError.response?.data?.message || "Error in user login");
     }
   }
 );
+
 
 export const fetchUsers = createAsyncThunk(
   "users/fetchUsers",
