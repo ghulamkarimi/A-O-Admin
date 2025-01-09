@@ -14,7 +14,7 @@ const CreateCarBuy = () => {
   const userId = localStorage.getItem("userId");
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null)
-  
+
   const initialValues: Partial<ICarBuy> = {
     carTitle: "",
     carCategory: "",
@@ -29,8 +29,8 @@ const CreateCarBuy = () => {
     carMotor: "",
     carHorsePower: "",
     carEuroNorm: "",
-    carFirstRegistrationDay: new Date().toISOString().split("T")[0],
-    carTechnicalInspection: new Date().toISOString().split("T")[0],
+    carFirstRegistrationDay: new Date().toISOString().split('T')[0],
+    carTechnicalInspection: new Date().toISOString().split('T')[0],
     carImages: [] as File[],
     carAirConditioning: false,
     carNavigation: false,
@@ -235,6 +235,7 @@ const CreateCarBuy = () => {
                 id="carFirstRegistrationDay"
                 name="carFirstRegistrationDay"
                 className="p-2 border rounded-md"
+
               />
               <ErrorMessage
                 name="carFirstRegistrationDay"

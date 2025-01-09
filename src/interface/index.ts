@@ -96,7 +96,7 @@ export interface ICarBuy {
     carHorsePower: string;
     carEuroNorm: string;
     fuelType: string;
-    carTechnicalInspection: Date;
+    carTechnicalInspection: string;
     carCategory: string;
     userId: string;
     createdAt: string;
