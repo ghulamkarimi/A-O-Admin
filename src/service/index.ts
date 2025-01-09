@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { IChangePassword, TAppointment, TReservation, TUser } from '../interface/index';
 import axiosJWT from './axiosJwt';
-export const API_URL = "https://car-db.aundoautoservice.de ";
+export const API_URL = "https://car-db.aundoautoservice.de";
 //export const API_URL = "http://localhost:7004";
 
 
@@ -29,7 +29,13 @@ export const refreshToken = () => {
 
 export const checkAccessToken = () => {
     const url = `${API_URL}/user/check-token`;
-    return axios.get(url);
+    const token = localStorage.getItem("accessToken");  // Token aus Local Storage holen
+  
+    return axios.get(url, {
+      headers: {
+        Authorization: `Bearer ${token}`,  // Token im Header mitsenden
+      }
+    });
   };
   
 
