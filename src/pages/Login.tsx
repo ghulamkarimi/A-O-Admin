@@ -38,7 +38,11 @@ const Login = () => {
       try {
         setIsLoading(true);
         const response = await dispatch(userLoginApi(values)).unwrap();
+     
+       
         NotificationService.success(response.message || "Login erfolgreich!");
+  
+        console.log("response", response);
         setTimeout(() => {
           navigate("/home");
         }, 2000);

@@ -21,9 +21,7 @@ import { checkAccessTokenApi, setUserId } from "./feuture/reducers/userSlice";
 import CarRentsList from "./pages/CarRentsList";
 import CreateCarRents from "./pages/CreateCarRents";
 import CarRentManagement from "./pages/CarRentManagement";
-import axios from "axios";
-
-axios.defaults.withCredentials = true;
+ 
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();

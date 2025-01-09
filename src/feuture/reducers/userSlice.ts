@@ -53,17 +53,16 @@ export const userRegisterApi = createAsyncThunk(
 // Removed duplicate checkAccessTokenApi declaration
 export const userLoginApi = createAsyncThunk(
   'users/userLoginApi',
-  async (initialUser: TUser, { rejectWithValue }) => {
+  async (initialUser: TUser) => {
     try {
       const response = await userLogin(initialUser);
-      localStorage.setItem("userId", response.data.userInfo.userId);
-      localStorage.setItem("exp", response.data.userInfo.exp.toString());
-      localStorage.setItem("userAdmin", response.data.userInfo.isAdmin.toString());
+      localStorage.setItem("userId", response.data.user.userId);
+      localStorage.setItem("exp", response.data.userInfo.exp);
+      localStorage.setItem("userAdmin", response.data.user.isAdmin);
+      console.log("response userslice", response);
       return response.data;
-    } catch (error) {
-      const axiosError = error as AxiosError<{ message?: string }>; 
-      console.error("Error during login:", axiosError);
-      return rejectWithValue(axiosError.response?.data?.message || "Error in user login");
+    } catch (error:any) {
+      throw error.response.data.message;
     }
   }
 );
