@@ -29,7 +29,7 @@ export interface IUser {
     refreshToken: string | null;
     verificationCode: string;
     isAccountVerified: boolean;
-    createdAt: Date;
+    createdAt: string;
     customerNumber: string;
 
 }

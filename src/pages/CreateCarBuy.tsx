@@ -14,6 +14,7 @@ const CreateCarBuy = () => {
   const userId = localStorage.getItem("userId");
   const [imagesPreview, setImagesPreview] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement | null>(null)
+  
   const initialValues: Partial<ICarBuy> = {
     carTitle: "",
     carCategory: "",
@@ -29,7 +30,7 @@ const CreateCarBuy = () => {
     carHorsePower: "",
     carEuroNorm: "",
     carFirstRegistrationDay: new Date().toISOString().split("T")[0],
-    carTechnicalInspection: new Date(),
+    carTechnicalInspection: new Date().toISOString().split("T")[0],
     carImages: [] as File[],
     carAirConditioning: false,
     carNavigation: false,
