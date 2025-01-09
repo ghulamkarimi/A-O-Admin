@@ -21,6 +21,7 @@ import { checkAccessTokenApi, setUserId } from "./feuture/reducers/userSlice";
 import CarRentsList from "./pages/CarRentsList";
 import CreateCarRents from "./pages/CreateCarRents";
 import CarRentManagement from "./pages/CarRentManagement";
+import axios from "axios";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -49,7 +50,7 @@ const App = () => {
     }
   }, [dispatch, navigate, userAdmin]);
 
-
+  axios.defaults.withCredentials = true;
   return (
     <div className="flex w-full">
       {/* Sidebar und Navbar nur für Admins sichtbar */}
