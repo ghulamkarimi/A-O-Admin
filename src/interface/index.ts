@@ -14,6 +14,8 @@ export interface IOffer {
 export type TOffer = Partial<IOffer>;
 
 
+
+
 export interface IUser {
     _id: string;
     firstName: string;
@@ -30,23 +32,24 @@ export interface IUser {
     verificationCode?: string;
     isAccountVerified: boolean;
     customerNumber?: string;
-  }
-  
-  
-  
-  export interface IUserInfo {
-      userId: string;
-      firstName: string;
-      lastName: string;
-      profile_photo: string;
-      email: string;
-      isAdmin: boolean;
-      isAccountVerified?: boolean;
-      customerNumber?: string;
-      exp: number;
-      iat: number;
-  
-  }
+    createdAt?: string;
+}
+
+
+
+export interface IUserInfo {
+    userId: string;
+    firstName: string;
+    lastName: string;
+    profile_photo: string;
+    email: string;
+    isAdmin: boolean;
+    isAccountVerified?: boolean;
+    customerNumber?: string;
+    exp: number;
+    iat: number;
+
+}
 export type TUser = Partial<IUser>;
 
 export interface IChangePassword {
