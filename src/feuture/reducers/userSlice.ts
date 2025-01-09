@@ -49,18 +49,24 @@ export const userRegisterApi = createAsyncThunk(
 );
 
 // Removed duplicate checkAccessTokenApi declaration
-
 export const userLoginApi = createAsyncThunk(
   "users/userLoginApi",
   async (initialUser: TUser) => {
     try {
       const response = await userLogin(initialUser);
       console.log("users/userLoginApi", response.data);
-      localStorage.setItem("userId", response.data.userInfo.userId);
-      localStorage.setItem("exp", response.data.userInfo.exp.toString());
-      localStorage.setItem("userAdmin", response.data.userInfo.isAdmin.toString());
-      return response.data;
+
+      // Stellen Sie sicher, dass die Antwort die richtigen Daten enthält
+      if (response.data && response.data.userInfo) {
+        localStorage.setItem("userId", response.data.userInfo.userId);
+        localStorage.setItem("exp", response.data.userInfo.exp.toString());
+        localStorage.setItem("userAdmin", response.data.userInfo.isAdmin.toString());
+        return response.data;
+      } else {
+        throw new Error("User info missing in response");
+      }
     } catch (error: any) {
+      console.error("Error during user login", error);
       return error?.response?.data?.message || "Error in user login";
     }
   }
