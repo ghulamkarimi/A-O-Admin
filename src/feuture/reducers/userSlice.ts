@@ -19,7 +19,7 @@ import { RootState } from "../store";
 import { IUser, IUserInfo, TUser } from "../../interface";
 import { IChangePassword } from "../../interface";
 import { changePasswordWithEmail } from "../../service/index";
-import { AxiosError } from "axios";
+ 
 
 
 interface IUserState {
