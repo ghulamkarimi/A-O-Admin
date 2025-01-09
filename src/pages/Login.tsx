@@ -37,6 +37,9 @@ const Login = () => {
       try {
         setIsLoading(true);
         const response = await dispatch(userLoginApi(values)).unwrap();
+        localStorage.setItem("userAdmin", response.userInfo.isAdmin);
+        localStorage.setItem("userId", response.userInfo.userId);
+        localStorage.setItem("exp", response.userInfo.exp.toString());
         NotificationService.success(response.message || "Login erfolgreich!");
         setTimeout(() => {
           navigate("/home");
