@@ -19,7 +19,8 @@ import { RootState } from "../store";
 import { IUser, IUserInfo, TUser } from "../../interface";
 import { IChangePassword } from "../../interface";
 import { changePasswordWithEmail } from "../../service/index";
-import axios, { AxiosError } from "axios";
+import { AxiosError } from "axios";
+
 
 interface IUserState {
   status: "idle" | "loading" | "succeeded" | "failed";
