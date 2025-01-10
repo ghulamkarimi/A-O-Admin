@@ -1,14 +1,14 @@
 import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import FormattedDate from "../components/FormatesDate";
-import { displayUserById, displayUsers } from "../feuture/reducers/userSlice";
+import {displayUsers } from "../feuture/reducers/userSlice";
 import { RootState } from '../feuture/store/index';
 
 const HomePage = () => {
   const offers = useSelector((state: RootState) => state.offer.entities);
   const offerCount = offers ? Object.keys(offers).length : 0;
-  const userId = localStorage.getItem("userId");
-  const user = useSelector((state: RootState) => userId ? displayUserById(state, userId) : null);
+
+  
   const latestOffer = offers ? Object.values(offers).slice(-1)[0] : null;
   const users = useSelector(displayUsers);
   const countUsers = users ? Object.keys(users).length : 0;
