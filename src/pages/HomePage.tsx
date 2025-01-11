@@ -7,8 +7,6 @@ import { RootState } from '../feuture/store/index';
 const HomePage = () => {
   const offers = useSelector((state: RootState) => state.offer.entities);
   const offerCount = offers ? Object.keys(offers).length : 0;
-
-  
   const latestOffer = offers ? Object.values(offers).slice(-1)[0] : null;
   const users = useSelector(displayUsers);
   const countUsers = users ? Object.keys(users).length : 0;
@@ -16,6 +14,8 @@ const HomePage = () => {
   const carBuy = useSelector((state: RootState) => state.carBuys.entities);
   const carBuyCount = carBuy ? Object.keys(carBuy).length : 0;
   const lastCarBuy = carBuy ? Object.values(carBuy).slice(-1)[0] : null;
+  const carRents = useSelector((state: RootState) => state.rent.entities);
+  const carRentsCount = carRents ? Object.keys(carRents).length : 0;
 
   return (
     <div className="p-8 bg-gradient-to-br from-gray-100 to-gray-200 min-h-screen">
@@ -55,9 +55,9 @@ const HomePage = () => {
         <div className="bg-gradient-to-r from-orange-500 to-orange-700 text-white p-8 rounded-xl shadow-2xl flex flex-col justify-between hover:scale-105 transition-transform">
           <h2 className="text-3xl font-semibold mb-4">Auto vermieten</h2>
           <p className="text-xl">Fahrzeuge verfügbar:</p>
-          <p className="text-6xl font-extrabold mb-6">20</p>
+          <p className="text-6xl font-extrabold mb-6">{carRentsCount}</p>
           <Link
-            to="/carRent"
+            to="/carRentsList"
             className="bg-white text-orange-700 py-3 px-6 rounded-md hover:bg-orange-100 transition font-semibold text-center"
           >
             Fahrzeuge anzeigen
