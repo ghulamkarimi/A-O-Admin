@@ -163,6 +163,9 @@ const AdminCalendar = () => {
                                                     )}
                                                     <p className="font-semibold text-gray-900">HSN: <span className="font-normal text-gray-800">{appointmentDetails.hsn || '____'}</span></p>
                                                     <p className="font-semibold text-gray-900">TSN: <span className="font-normal text-gray-800">{appointmentDetails.tsn || '____'}</span></p>
+                                                     {appointmentDetails.comment && (
+                                                        <p className="font-semibold text-gray-900">Kommentar: <span className="font-normal text-gray-800">{appointmentDetails.comment}</span></p>
+                                                     )}
                                                 </div>
                                             ) : (
                                                 <p className="text-gray-500">Keine Details verfügbar</p>
